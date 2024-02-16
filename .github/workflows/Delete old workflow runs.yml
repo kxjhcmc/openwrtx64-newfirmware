@@ -7,8 +7,10 @@ on:
 jobs:
   del_runs:
     runs-on: ubuntu-latest
-    
-  steps:
+    permissions:
+      actions: write
+      contents: read
+    steps:
     - name: Delete workflow runs
       uses: kxjhcmc/delete-workflow-runs@main
       with:
