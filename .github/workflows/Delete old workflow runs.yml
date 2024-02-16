@@ -8,7 +8,7 @@ jobs:
   del_runs:
     runs-on: ubuntu-latest
   steps:
-    - name: Delete workflow runs
+    - name: Delete old workflow runs
       uses: kxjhcmc/delete-workflow-runs@main
       with:
         retain_days: 1
