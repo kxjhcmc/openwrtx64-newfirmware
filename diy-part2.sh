@@ -13,5 +13,7 @@
 # 修改openwrt登陆地址
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
 # 添加编译日期标识
-VER_FILE=$(find ./feeds/luci/modules/ -type f -name "10_system.js")
-awk -v wrt_repo="$WRT_REPO" -v wrt_date="$WRT_DATE" '{ gsub(/(\(luciversion \|\| \047\047\))/, "& + (\047 / "wrt_repo"-"wrt_date"\047)") } 1' $VER_FILE > temp.js && mv -f temp.js $VER_FILE
+export DATE_VERSION=$(date -d "$(rdate -n -4 -p pool.ntp.org)" +'%Y-%m-%d')
+sed -i "s/%C/%C (${DATE_VERSION})/g" package/base-files/files/etc/openwrt_release
+#VER_FILE=$(find ./feeds/luci/modules/ -type f -name "10_system.js")
+#awk -v wrt_repo="$WRT_REPO" -v wrt_date="$WRT_DATE" '{ gsub(/(\(luciversion \|\| \047\047\))/, "& + (\047 / "wrt_repo"-"wrt_date"\047)") } 1' $VER_FILE > temp.js && mv -f temp.js $VER_FILE
