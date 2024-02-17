@@ -79,6 +79,7 @@ jobs:
       uses: kxjhcmc/cachewrtbuild@main
       with:
         ccache: 'true'
+        clean: 'true'
         prefix: ${{ github.workspace }}/openwrt    
 
     - name: Load custom feeds
