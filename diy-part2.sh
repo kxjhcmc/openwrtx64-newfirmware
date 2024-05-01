@@ -12,6 +12,9 @@
 
 # 修改openwrt登陆地址
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
+# 替换chinadns-ng
+rm -rf feeds/packages/net/chinadns-ng/Makefile
+wget -P feeds/packages/net/chinadns-ng https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/main/chinadns-ng/Makefile
 # 添加编译日期标识
 export DATE_VERSION=$(date -d "$(rdate -n -4 -p pool.ntp.org)" +'%Y-%m-%d')
 sed -i "s/%C/%C (${DATE_VERSION})/g" package/base-files/files/etc/openwrt_release
