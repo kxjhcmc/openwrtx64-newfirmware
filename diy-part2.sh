@@ -12,8 +12,9 @@
 
 # 修改openwrt登陆地址
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
-#删除自带的passwall
+#替换自带的passwall
 rm -rf feeds/luci/applications/luci-app-passwall
+git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
 # 替换chinadns-ng
 #rm -rf feeds/packages/net/chinadns-ng/Makefile
 #wget -P feeds/packages/net/chinadns-ng https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/main/chinadns-ng/Makefile
