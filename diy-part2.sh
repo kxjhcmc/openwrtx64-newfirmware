@@ -26,7 +26,7 @@ wget -P feeds/packages/net/xray-core https://raw.githubusercontent.com/kxjhcmc/o
 #wget -P feeds/packages/net/miniupnpd https://raw.githubusercontent.com/openwrt/packages/master/net/miniupnpd/Makefile
 
 # 添加编译日期标识
-export DATE_VERSION=$(date -d "$(rdate -n -4 -p pool.ntp.org)" +'%Y-%m-%d')
+export DATE_VERSION=$(date +'%Y-%m-%d')
 sed -i "s/%C/%C (${DATE_VERSION})/g" package/base-files/files/etc/openwrt_release
 #VER_FILE=$(find ./feeds/luci/modules/ -type f -name "10_system.js")
 #awk -v wrt_repo="$WRT_REPO" -v wrt_date="$WRT_DATE" '{ gsub(/(\(luciversion \|\| \047\047\))/, "& + (\047 / "wrt_repo"-"wrt_date"\047)") } 1' $VER_FILE > temp.js && mv -f temp.js $VER_FILE
