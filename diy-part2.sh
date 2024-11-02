@@ -19,8 +19,8 @@ git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
 rm -rf feeds/packages/net/chinadns-ng/Makefile
 wget -P feeds/packages/net/chinadns-ng https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/main/chinadns-ng/Makefile
 #替换xray
-rm -rf feeds/packages/net/xray-core
-wget -P feeds/packages/net/xray-core https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/v2ray-core/Makefile
+rm -rf feeds/packages/net/xray-core/Makefile
+wget -P feeds/packages/net/xray-core https://raw.githubusercontent.com/kxjhcmc/openwrtx64-newfirmware/refs/heads/main/Makefile
 # 替换miniupnpd
 #rm -rf feeds/packages/net/miniupnpd/Makefile
 #wget -P feeds/packages/net/miniupnpd https://raw.githubusercontent.com/openwrt/packages/master/net/miniupnpd/Makefile
