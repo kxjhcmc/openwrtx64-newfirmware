@@ -17,7 +17,7 @@ rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
 # 替换chinadns-ng
 rm -rf feeds/packages/net/chinadns-ng/Makefile
-wget -P feeds/packages/net/chinadns-ng https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/main/chinadns-ng/Makefile
+wget -P feeds/packages/net/chinadns-ng https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/chinadns-ng/Makefile
 #替换xray
 rm -rf feeds/packages/net/xray-core
 wget -P feeds/packages/net/xray-core https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/xray-core/Makefile
