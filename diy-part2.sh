@@ -25,8 +25,8 @@ wget -P feeds/packages/net/xray-core https://raw.githubusercontent.com/xiaorouji
 rm -rf feeds/packages/net/sing-box
 wget -P feeds/packages/net/sing-box https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/sing-box/Makefile
 #替换Hysteria
-rm -rf feeds/packages/net/Hysteria
-wget -P feeds/packages/net/Hysteria https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/hysteria/Makefile
+rm -rf feeds/packages/net/hysteria
+wget -P feeds/packages/net/hysteria https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/hysteria/Makefile
 # 替换miniupnpd
 #rm -rf feeds/packages/net/miniupnpd/Makefile
 #wget -P feeds/packages/net/miniupnpd https://raw.githubusercontent.com/openwrt/packages/master/net/miniupnpd/Makefile
