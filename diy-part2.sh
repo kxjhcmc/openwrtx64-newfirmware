@@ -16,7 +16,7 @@ sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generat
 rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
 # 替换chinadns-ng
-rm -rf feeds/packages/net/chinadns-ng/Makefile
+rm -rf feeds/packages/net/chinadns-ng
 wget -P feeds/packages/net/chinadns-ng https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/chinadns-ng/Makefile
 #替换xray
 rm -rf feeds/packages/net/xray-core
