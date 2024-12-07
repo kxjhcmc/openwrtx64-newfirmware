@@ -28,8 +28,8 @@ wget -P feeds/packages/net/sing-box https://raw.githubusercontent.com/xiaorouji/
 rm -rf feeds/packages/net/hysteria
 wget -P feeds/packages/net/hysteria https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/hysteria/Makefile
 # 替换miniupnpd
-#rm -rf feeds/packages/net/miniupnpd/Makefile
-#wget -P feeds/packages/net/miniupnpd https://raw.githubusercontent.com/openwrt/packages/master/net/miniupnpd/Makefile
+rm -rf feeds/packages/net/miniupnpd
+git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
 
 # 添加编译日期标识
 export DATE_VERSION=$(date +'%Y-%m-%d')
