@@ -15,18 +15,10 @@ sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generat
 #替换自带的passwall
 rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
-# 替换chinadns-ng
-rm -rf feeds/packages/net/chinadns-ng
-wget -P feeds/packages/net/chinadns-ng https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/chinadns-ng/Makefile
-#替换xray
-rm -rf feeds/packages/net/xray-core
-wget -P feeds/packages/net/xray-core https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/xray-core/Makefile
-#替换sing-box
-rm -rf feeds/packages/net/sing-box
-wget -P feeds/packages/net/sing-box https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/sing-box/Makefile
-#替换Hysteria
-rm -rf feeds/packages/net/hysteria
-wget -P feeds/packages/net/hysteria https://raw.githubusercontent.com/xiaorouji/openwrt-passwall-packages/refs/heads/main/hysteria/Makefile
+# 替换passwall组件
+rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,simple-obfs,tcping,trojan,trojan-go,trojan-plus,tuic-client,v2ray-plugin,xray-plugin}
+git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
+
 # 替换miniupnpd
 rm -rf feeds/packages/net/miniupnpd
 git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
