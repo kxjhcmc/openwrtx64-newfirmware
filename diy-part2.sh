@@ -23,6 +23,10 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 rm -rf feeds/packages/net/miniupnpd
 git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
 
+# 总是拉取官方golang版本，避免xray&v2ray编译错误
+rm -rf feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
+
 # 添加编译日期标识
 export DATE_VERSION=$(date +'%Y-%m-%d')
 sed -i "s/%C/%C (${DATE_VERSION})/g" package/base-files/files/etc/openwrt_release
