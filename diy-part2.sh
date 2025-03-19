@@ -20,8 +20,8 @@ rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chi
 git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
 
 # 替换miniupnpd
-rm -rf feeds/packages/net/miniupnpd
-git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
+#rm -rf feeds/packages/net/miniupnpd
+#git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
 
 # 总是拉取官方golang版本，避免xray&v2ray编译错误
 #rm -rf feeds/packages/lang/golang
