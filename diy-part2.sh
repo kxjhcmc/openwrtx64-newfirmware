@@ -28,7 +28,11 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 #git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
 
 # 添加编译日期标识
-#export DATE_VERSION=$(date +'%Y-%m-%d')
-#sed -i "s/%C/%C (${DATE_VERSION})/g" package/base-files/files/etc/openwrt_release
-#VER_FILE=$(find ./feeds/luci/modules/ -type f -name "10_system.js")
-#awk -v wrt_repo="$WRT_REPO" -v wrt_date="$WRT_DATE" '{ gsub(/(\(luciversion \|\| \047\047\))/, "& + (\047 / "wrt_repo"-"wrt_date"\047)") } 1' $VER_FILE > temp.js && mv -f temp.js $VER_FILE
+# 获取当前时间
+BUILD_DATE=$(date +"%Y-%m-%d")
+
+# 目标文件路径
+TARGET_FILE="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
+# 修改文件，在第 87 行后面添加编译时间
+sed -i '87s/\(luciversion || .\)/\1 + '\'' ('"$BUILD_TIME"')'\''/' "$TARGET_FILE"
+
