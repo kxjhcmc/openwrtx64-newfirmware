@@ -33,4 +33,4 @@ VER_FILE="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/s
 # 获取当前编译日期（YYYY-MM-DD）
 BUILD_DATE=$(date +"%Y-%m-%d")
 # 修改文件，添加编译日期
-awk -v build_date="$BUILD_DATE" '{ sub(/\(luciversion \|\| \047\047\)/, "& + (\047 " build_date "\047)"); print }' "$VER_FILE" > "$VER_FILE.tmp" && mv "$VER_FILE.tmp" "$VER_FILE"
+awk -v build_date="$BUILD_DATE" '{ sub(/\(luciversion \|\| \047\047\)/, "& + \047 ( " build_date " )\047"); print }' "$VER_FILE" > "$VER_FILE.tmp" && mv "$VER_FILE.tmp" "$VER_FILE"
