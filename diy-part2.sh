@@ -19,6 +19,10 @@ git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,simple-obfs,tcping,trojan,trojan-go,trojan-plus,tuic-client,v2ray-plugin,xray-plugin}
 git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
 
+#添加fullcone
+mkdir -p /package/network/utils/fullconenat-nft
+curl -o /package/network/utils/fullconenat-nft/Makefile https://raw.githubusercontent.com/immortalwrt/immortalwrt/refs/heads/master/package/network/utils/fullconenat-nft/Makefile
+
 # 替换miniupnpd
 #rm -rf feeds/packages/net/miniupnpd
 #git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
