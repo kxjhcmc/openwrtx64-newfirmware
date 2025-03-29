@@ -23,9 +23,13 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 #rm -rf feeds/packages/net/miniupnpd
 #git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
 
-# 总是拉取官方golang版本，避免xray&v2ray编译错误
-#rm -rf feeds/packages/lang/golang
-#git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
+# 添加agron主题
+git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+
+#添加额外APP
+
+git clone https://github.com/kxjhcmc/openwrt-app package/openwrt-app
+
 
 # 添加编译日期标识
 # 目标文件路径
