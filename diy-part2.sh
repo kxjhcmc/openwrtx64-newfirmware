@@ -25,7 +25,9 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 
 # 添加agron主题
 git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
-
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-light/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
 #添加额外APP
 
 git clone https://github.com/kxjhcmc/openwrt-app package/openwrt-app
