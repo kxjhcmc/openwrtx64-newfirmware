@@ -13,7 +13,7 @@
 # 修改openwrt登陆地址
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
 #替换自带的passwall
-#rm -rf feeds/luci/applications/luci-app-passwall
+rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
 # 替换passwall组件
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,simple-obfs,tcping,trojan,trojan-go,trojan-plus,tuic-client,v2ray-plugin,xray-plugin}
@@ -24,13 +24,13 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 #git clone https://github.com/kxjhcmc/miniupnpd feeds/packages/net/miniupnpd
 
 # 添加agron主题
-git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
-sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
-sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-light/Makefile
-sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
+#git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-light/Makefile
+#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
 #添加额外APP
 
-git clone https://github.com/kxjhcmc/openwrt-app package/openwrt-app
+#git clone https://github.com/kxjhcmc/openwrt-app package/openwrt-app
 
 
 # 添加编译日期标识
