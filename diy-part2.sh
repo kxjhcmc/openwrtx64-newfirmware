@@ -28,10 +28,28 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-light/Makefile
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
-#添加额外APP
 
-#git clone https://github.com/kxjhcmc/openwrt-app package/openwrt-app
 
+# 替换防火墙实现NAT1
+FIREWALL4_DIR="package/network/config/firewall4"
+PATCHES_DIR="$FIREWALL4_DIR/patches"
+FULLCONE_DIR="package/network/utils/fullconenat-nft"
+
+FIREWALL4_MAKEFILE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FIREWALL4_DIR/Makefile"
+PATCH_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$PATCHES_DIR/001-firewall4-add-support-for-fullcone-nat.patch"
+FULLCONE_MAKEFILE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FULLCONE_DIR/Makefile"
+
+# 下载 firewall4 的 Makefile
+mkdir -p "$FIREWALL4_DIR"
+curl -fsSL "$FIREWALL4_MAKEFILE_URL" -o "$FIREWALL4_DIR/Makefile" && echo "✓ firewall4 Makefile 下载成功"
+
+# 下载 fullcone 补丁
+mkdir -p "$PATCHES_DIR"
+curl -fsSL "$PATCH_URL" -o "$PATCHES_DIR/001-firewall4-add-support-for-fullcone-nat.patch" && echo "✓ 补丁文件下载成功"
+
+# 下载 fullconenat-nft 的 Makefile
+mkdir -p "$FULLCONE_DIR"
+curl -fsSL "$FULLCONE_MAKEFILE_URL" -o "$FULLCONE_DIR/Makefile" && echo "✓ fullconenat-nft Makefile 下载成功"
 
 # 添加编译日期标识
 # 目标文件路径
