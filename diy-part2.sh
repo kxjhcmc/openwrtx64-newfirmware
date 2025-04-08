@@ -31,25 +31,26 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 
 
 # 替换防火墙实现NAT1
+# ---------- firewall4 ----------
 FIREWALL4_DIR="package/network/config/firewall4"
-PATCHES_DIR="$FIREWALL4_DIR/patches"
+FIREWALL4_PATCHES="$FIREWALL4_DIR/patches"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FIREWALL4_DIR/Makefile" -o "$FIREWALL4_DIR/Makefile" && echo "✓ firewall4 Makefile 下载成功"
+mkdir -p "$FIREWALL4_PATCHES"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" -o "$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" && echo "✓ firewall4 patch 下载成功"
+
+# ---------- fullconenat-nft ----------
 FULLCONE_DIR="package/network/utils/fullconenat-nft"
-
-FIREWALL4_MAKEFILE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FIREWALL4_DIR/Makefile"
-PATCH_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$PATCHES_DIR/001-firewall4-add-support-for-fullcone-nat.patch"
-FULLCONE_MAKEFILE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FULLCONE_DIR/Makefile"
-
-# 下载 firewall4 的 Makefile
-mkdir -p "$FIREWALL4_DIR"
-curl -fsSL "$FIREWALL4_MAKEFILE_URL" -o "$FIREWALL4_DIR/Makefile" && echo "✓ firewall4 Makefile 下载成功"
-
-# 下载 fullcone 补丁
-mkdir -p "$PATCHES_DIR"
-curl -fsSL "$PATCH_URL" -o "$PATCHES_DIR/001-firewall4-add-support-for-fullcone-nat.patch" && echo "✓ 补丁文件下载成功"
-
-# 下载 fullconenat-nft 的 Makefile
 mkdir -p "$FULLCONE_DIR"
-curl -fsSL "$FULLCONE_MAKEFILE_URL" -o "$FULLCONE_DIR/Makefile" && echo "✓ fullconenat-nft Makefile 下载成功"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FULLCONE_DIR/Makefile" -o "$FULLCONE_DIR/Makefile" && echo "✓ fullconenat-nft Makefile 下载成功"
+
+# ---------- nftables ----------
+NFTABLES_DIR="package/network/utils/nftables"
+NFTABLES_PATCHES="$NFTABLES_DIR/patches"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$NFTABLES_DIR/Makefile" -o "$NFTABLES_DIR/Makefile" && echo "✓ nftables Makefile 下载成功"
+mkdir -p "$NFTABLES_PATCHES"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$NFTABLES_PATCHES/001-drop-useless-file.patch" -o "$NFTABLES_PATCHES/001-drop-useless-file.patch" && echo "✓ nftables patch 001 下载成功"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" -o "$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" && echo "✓ nftables patch 002 下载成功"
+
 
 # 添加编译日期标识
 # 目标文件路径
