@@ -15,9 +15,11 @@ sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generat
 #替换自带的passwall
 rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
+echo "✓ passwall下载成功"
 # 替换passwall组件
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,simple-obfs,tcping,trojan,trojan-go,trojan-plus,tuic-client,v2ray-plugin,xray-plugin}
 git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
+echo "✓ passwall-packages下载成功"
 
 # 替换miniupnpd
 #rm -rf feeds/packages/net/miniupnpd
