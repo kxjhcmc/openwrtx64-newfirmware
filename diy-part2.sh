@@ -38,6 +38,9 @@ curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FI
 FULLCONE_DIR="package/network/utils/fullconenat-nft"
 mkdir -p "$FULLCONE_DIR"
 curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FULLCONE_DIR/Makefile" -o "$FULLCONE_DIR/Makefile" && echo "✓ fullconenat-nft Makefile 下载成功"
+FULLCONE_PATCHES="$FULLCONE_DIR/patches"
+mkdir -p "$FULLCONE_PATCHES"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/refs/heads/master/package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch" -o "$FULLCONE_PATCHES/010-fix-build-with-kernel-6.12.patch" && echo "✓ fullconenat-nft patch 下载成功"
 
 # ---------- nftables ----------
 NFTABLES_DIR="package/network/utils/nftables"
