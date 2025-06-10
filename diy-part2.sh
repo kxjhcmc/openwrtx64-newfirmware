@@ -25,58 +25,59 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-light/Makefile
 #sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
 
+REPO_BASE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master"
 
 # 替换防火墙实现NAT1
 # ---------- firewall4 ----------
 FIREWALL4_DIR="package/network/config/firewall4"
 FIREWALL4_PATCHES="$FIREWALL4_DIR/patches"
 mkdir -p "$FIREWALL4_PATCHES"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FIREWALL4_DIR/Makefile" -o "$FIREWALL4_DIR/Makefile" && echo "✓ firewall4 Makefile 下载成功"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" -o "$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" && echo "✓ firewall4 patch 下载成功"
+curl -fsSL "$REPO_BASE_URL/$FIREWALL4_DIR/Makefile" -o "$FIREWALL4_DIR/Makefile" && echo "✓ firewall4 Makefile 下载成功"
+curl -fsSL "$REPO_BASE_URL/$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" -o "$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" && echo "✓ firewall4 patch 下载成功"
 
 # ---------- fullconenat-nft ----------
 FULLCONE_DIR="package/network/utils/fullconenat-nft"
 mkdir -p "$FULLCONE_DIR"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$FULLCONE_DIR/Makefile" -o "$FULLCONE_DIR/Makefile" && echo "✓ fullconenat-nft Makefile 下载成功"
+curl -fsSL "$REPO_BASE_URL/$FULLCONE_DIR/Makefile" -o "$FULLCONE_DIR/Makefile" && echo "✓ fullconenat-nft Makefile 下载成功"
 FULLCONE_PATCHES="$FULLCONE_DIR/patches"
 mkdir -p "$FULLCONE_PATCHES"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/refs/heads/master/package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch" -o "$FULLCONE_PATCHES/010-fix-build-with-kernel-6.12.patch" && echo "✓ fullconenat-nft patch 下载成功"
+curl -fsSL "$REPO_BASE_URL/$FULLCONE_PATCHES/010-fix-build-with-kernel-6.12.patch" -o "$FULLCONE_PATCHES/010-fix-build-with-kernel-6.12.patch" && echo "✓ fullconenat-nft patch 下载成功"
 
 # ---------- nftables ----------
 NFTABLES_DIR="package/network/utils/nftables"
 NFTABLES_PATCHES="$NFTABLES_DIR/patches"
 mkdir -p "$NFTABLES_PATCHES"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$NFTABLES_DIR/Makefile" -o "$NFTABLES_DIR/Makefile" && echo "✓ nftables Makefile 下载成功"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$NFTABLES_PATCHES/001-drop-useless-file.patch" -o "$NFTABLES_PATCHES/001-drop-useless-file.patch" && echo "✓ nftables patch 001 下载成功"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" -o "$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" && echo "✓ nftables patch 002 下载成功"
+curl -fsSL "$REPO_BASE_URL/$NFTABLES_DIR/Makefile" -o "$NFTABLES_DIR/Makefile" && echo "✓ nftables Makefile 下载成功"
+curl -fsSL "$REPO_BASE_URL/$NFTABLES_PATCHES/001-drop-useless-file.patch" -o "$NFTABLES_PATCHES/001-drop-useless-file.patch" && echo "✓ nftables patch 001 下载成功"
+curl -fsSL "$REPO_BASE_URL/$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" -o "$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" && echo "✓ nftables patch 002 下载成功"
 
 # ---------- libnftnl ----------
 LIBNFTNL_DIR="package/libs/libnftnl"
 LIBNFTNL_PATCHES="$LIBNFTNL_DIR/patches"
 mkdir -p "$LIBNFTNL_PATCHES"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$LIBNFTNL_DIR/Makefile" -o "$LIBNFTNL_DIR/Makefile" && echo "✓ libnftnl Makefile 下载成功"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" -o "$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" && echo "✓ libnftnl patch 下载成功"
+curl -fsSL "$REPO_BASE_URL/$LIBNFTNL_DIR/Makefile" -o "$LIBNFTNL_DIR/Makefile" && echo "✓ libnftnl Makefile 下载成功"
+curl -fsSL "$REPO_BASE_URL/$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" -o "$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" && echo "✓ libnftnl patch 下载成功"
 
 # --- Download autocore Makefile ---
 AUTOCORE_DIR="package/emortal/autocore"
 echo "正在创建目录并下载 autocore Makefile..."
 mkdir -p "$AUTOCORE_DIR" && \
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_DIR}/Makefile" -o "${AUTOCORE_DIR}/Makefile" && \
+curl -fsSL "$REPO_BASE_URL/$AUTOCORE_DIR/Makefile" -o "$AUTOCORE_DIR/Makefile" && \
 echo "✓ autocore Makefile 下载成功" || echo "✗ autocore Makefile 下载失败"
 
 # --- Download autocore files/ directory contents ---
-AUTOCORE_FILES_DIR="${AUTOCORE_DIR}/files"
+AUTOCORE_FILES_DIR="$AUTOCORE_DIR/files"
 echo "正在创建目录并下载 autocore/files/ 目录内容..."
 mkdir -p "$AUTOCORE_FILES_DIR" && \
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/60-autocore-reload-rpcd" -o "${AUTOCORE_FILES_DIR}/60-autocore-reload-rpcd" && \
+curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/60-autocore-reload-rpcd" -o "$AUTOCORE_FILES_DIR/60-autocore-reload-rpcd" && \
 echo "✓ 60-autocore-reload-rpcd 下载成功" || echo "✗ 60-autocore-reload-rpcd 下载失败"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/autocore" -o "${AUTOCORE_FILES_DIR}/autocore" && \
+curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/autocore" -o "$AUTOCORE_FILES_DIR/autocore" && \
 echo "✓ autocore (script) 下载成功" || echo "✗ autocore (script) 下载失败"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/cpuinfo" -o "${AUTOCORE_FILES_DIR}/cpuinfo" && \
+curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/cpuinfo" -o "$AUTOCORE_FILES_DIR/cpuinfo" && \
 echo "✓ cpuinfo 下载成功" || echo "✗ cpuinfo 下载失败"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/luci-mod-status-autocore.json" -o "${AUTOCORE_FILES_DIR}/luci-mod-status-autocore.json" && \
+curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/luci-mod-status-autocore.json" -o "$AUTOCORE_FILES_DIR/luci-mod-status-autocore.json" && \
 echo "✓ luci-mod-status-autocore.json 下载成功" || echo "✗ luci-mod-status-autocore.json 下载失败"
-curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/tempinfo" -o "${AUTOCORE_FILES_DIR}/tempinfo" && \
+curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/tempinfo" -o "$AUTOCORE_FILES_DIR/tempinfo" && \
 echo "✓ tempinfo 下载成功" || echo "✗ tempinfo 下载失败"
 
 # 添加编译日期标识
