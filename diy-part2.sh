@@ -57,7 +57,27 @@ mkdir -p "$LIBNFTNL_PATCHES"
 curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$LIBNFTNL_DIR/Makefile" -o "$LIBNFTNL_DIR/Makefile" && echo "✓ libnftnl Makefile 下载成功"
 curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" -o "$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" && echo "✓ libnftnl patch 下载成功"
 
+# --- Download autocore Makefile ---
+AUTOCORE_DIR="package/emortal/autocore"
+echo "正在创建目录并下载 autocore Makefile..."
+mkdir -p "$AUTOCORE_DIR" && \
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_DIR}/Makefile" -o "${AUTOCORE_DIR}/Makefile" && \
+echo "✓ autocore Makefile 下载成功" || echo "✗ autocore Makefile 下载失败"
 
+# --- Download autocore files/ directory contents ---
+AUTOCORE_FILES_DIR="${AUTOCORE_DIR}/files"
+echo "正在创建目录并下载 autocore/files/ 目录内容..."
+mkdir -p "$AUTOCORE_FILES_DIR" && \
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/60-autocore-reload-rpcd" -o "${AUTOCORE_FILES_DIR}/60-autocore-reload-rpcd" && \
+echo "✓ 60-autocore-reload-rpcd 下载成功" || echo "✗ 60-autocore-reload-rpcd 下载失败"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/autocore" -o "${AUTOCORE_FILES_DIR}/autocore" && \
+echo "✓ autocore (script) 下载成功" || echo "✗ autocore (script) 下载失败"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/cpuinfo" -o "${AUTOCORE_FILES_DIR}/cpuinfo" && \
+echo "✓ cpuinfo 下载成功" || echo "✗ cpuinfo 下载失败"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/luci-mod-status-autocore.json" -o "${AUTOCORE_FILES_DIR}/luci-mod-status-autocore.json" && \
+echo "✓ luci-mod-status-autocore.json 下载成功" || echo "✗ luci-mod-status-autocore.json 下载失败"
+curl -fsSL "https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/${AUTOCORE_FILES_DIR}/tempinfo" -o "${AUTOCORE_FILES_DIR}/tempinfo" && \
+echo "✓ tempinfo 下载成功" || echo "✗ tempinfo 下载失败"
 
 # 添加编译日期标识
 # 目标文件路径
