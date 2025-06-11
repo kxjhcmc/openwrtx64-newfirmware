@@ -1,89 +1,75 @@
 #!/bin/bash
-#
-# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
-# https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2.sh
-# Description: OpenWrt DIY script part 2 (After Update feeds)
-#
+set -e  # 脚本遇到错误即退出
+set -u  # 使用未定义变量时报错
+set -o pipefail  # 管道中任何命令失败都会使整个管道失败
 
-# 修改openwrt登陆地址
+# 工具函数：下载文件并显示状态
+download() {
+    local url="$1"
+    local dest="$2"
+    if curl -fsSL "$url" -o "$dest"; then
+        echo "✓ $(basename "$dest") 下载成功"
+    else
+        echo "✗ $(basename "$dest") 下载失败"
+    fi
+}
+
+echo "🔧 修改默认登录地址为 192.168.0.1"
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
-#替换自带的passwall
+
+echo "🧹 替换 luci-app-passwall"
 rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
-# 替换passwall组件
+
+echo "🧼 替换 passwall 相关依赖"
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,simple-obfs,tcping,trojan,trojan-go,trojan-plus,tuic-client,v2ray-plugin,xray-plugin}
 git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
 
-# 添加agron主题
-#git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-light/Makefile
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile
+# 可选主题注释块，保留设置模板
+# echo "🎨 添加 luci-theme-argon 主题"
+# git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+# for file in feeds/luci/collections/luci*/Makefile; do
+#     sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' "$file"
+# done
 
 REPO_BASE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master"
 
-# 替换防火墙实现NAT1
-# ---------- firewall4 ----------
+echo "🧱 替换 firewall4 以支持 fullcone NAT"
 FIREWALL4_DIR="package/network/config/firewall4"
-FIREWALL4_PATCHES="$FIREWALL4_DIR/patches"
-mkdir -p "$FIREWALL4_PATCHES"
-curl -fsSL "$REPO_BASE_URL/$FIREWALL4_DIR/Makefile" -o "$FIREWALL4_DIR/Makefile" && echo "✓ firewall4 Makefile 下载成功"
-curl -fsSL "$REPO_BASE_URL/$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" -o "$FIREWALL4_PATCHES/001-firewall4-add-support-for-fullcone-nat.patch" && echo "✓ firewall4 patch 下载成功"
+mkdir -p "$FIREWALL4_DIR/patches"
+download "$REPO_BASE_URL/$FIREWALL4_DIR/Makefile" "$FIREWALL4_DIR/Makefile"
+download "$REPO_BASE_URL/$FIREWALL4_DIR/patches/001-firewall4-add-support-for-fullcone-nat.patch" "$FIREWALL4_DIR/patches/001-firewall4-add-support-for-fullcone-nat.patch"
 
-# ---------- fullconenat-nft ----------
+echo "🌐 添加 fullconenat-nft 支持"
 FULLCONE_DIR="package/network/utils/fullconenat-nft"
-mkdir -p "$FULLCONE_DIR"
-curl -fsSL "$REPO_BASE_URL/$FULLCONE_DIR/Makefile" -o "$FULLCONE_DIR/Makefile" && echo "✓ fullconenat-nft Makefile 下载成功"
-FULLCONE_PATCHES="$FULLCONE_DIR/patches"
-mkdir -p "$FULLCONE_PATCHES"
-curl -fsSL "$REPO_BASE_URL/$FULLCONE_PATCHES/010-fix-build-with-kernel-6.12.patch" -o "$FULLCONE_PATCHES/010-fix-build-with-kernel-6.12.patch" && echo "✓ fullconenat-nft patch 下载成功"
+mkdir -p "$FULLCONE_DIR/patches"
+download "$REPO_BASE_URL/$FULLCONE_DIR/Makefile" "$FULLCONE_DIR/Makefile"
+download "$REPO_BASE_URL/$FULLCONE_DIR/patches/010-fix-build-with-kernel-6.12.patch" "$FULLCONE_DIR/patches/010-fix-build-with-kernel-6.12.patch"
 
-# ---------- nftables ----------
+echo "📦 替换 nftables"
 NFTABLES_DIR="package/network/utils/nftables"
-NFTABLES_PATCHES="$NFTABLES_DIR/patches"
-mkdir -p "$NFTABLES_PATCHES"
-curl -fsSL "$REPO_BASE_URL/$NFTABLES_DIR/Makefile" -o "$NFTABLES_DIR/Makefile" && echo "✓ nftables Makefile 下载成功"
-curl -fsSL "$REPO_BASE_URL/$NFTABLES_PATCHES/001-drop-useless-file.patch" -o "$NFTABLES_PATCHES/001-drop-useless-file.patch" && echo "✓ nftables patch 001 下载成功"
-curl -fsSL "$REPO_BASE_URL/$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" -o "$NFTABLES_PATCHES/002-nftables-add-fullcone-expression-support.patch" && echo "✓ nftables patch 002 下载成功"
+mkdir -p "$NFTABLES_DIR/patches"
+download "$REPO_BASE_URL/$NFTABLES_DIR/Makefile" "$NFTABLES_DIR/Makefile"
+download "$REPO_BASE_URL/$NFTABLES_DIR/patches/001-drop-useless-file.patch" "$NFTABLES_DIR/patches/001-drop-useless-file.patch"
+download "$REPO_BASE_URL/$NFTABLES_DIR/patches/002-nftables-add-fullcone-expression-support.patch" "$NFTABLES_DIR/patches/002-nftables-add-fullcone-expression-support.patch"
 
-# ---------- libnftnl ----------
+echo "🔗 替换 libnftnl"
 LIBNFTNL_DIR="package/libs/libnftnl"
-LIBNFTNL_PATCHES="$LIBNFTNL_DIR/patches"
-mkdir -p "$LIBNFTNL_PATCHES"
-curl -fsSL "$REPO_BASE_URL/$LIBNFTNL_DIR/Makefile" -o "$LIBNFTNL_DIR/Makefile" && echo "✓ libnftnl Makefile 下载成功"
-curl -fsSL "$REPO_BASE_URL/$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" -o "$LIBNFTNL_PATCHES/001-libnftnl-add-fullcone-expression-support.patch" && echo "✓ libnftnl patch 下载成功"
+mkdir -p "$LIBNFTNL_DIR/patches"
+download "$REPO_BASE_URL/$LIBNFTNL_DIR/Makefile" "$LIBNFTNL_DIR/Makefile"
+download "$REPO_BASE_URL/$LIBNFTNL_DIR/patches/001-libnftnl-add-fullcone-expression-support.patch" "$LIBNFTNL_DIR/patches/001-libnftnl-add-fullcone-expression-support.patch"
 
-# --- Download autocore Makefile ---
+echo "📡 下载 autocore 组件"
 AUTOCORE_DIR="package/emortal/autocore"
-echo "正在创建目录并下载 autocore Makefile..."
-mkdir -p "$AUTOCORE_DIR" && \
-curl -fsSL "$REPO_BASE_URL/$AUTOCORE_DIR/Makefile" -o "$AUTOCORE_DIR/Makefile" && \
-echo "✓ autocore Makefile 下载成功" || echo "✗ autocore Makefile 下载失败"
-
-# --- Download autocore files/ directory contents ---
 AUTOCORE_FILES_DIR="$AUTOCORE_DIR/files"
-echo "正在创建目录并下载 autocore/files/ 目录内容..."
-mkdir -p "$AUTOCORE_FILES_DIR" && \
-curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/60-autocore-reload-rpcd" -o "$AUTOCORE_FILES_DIR/60-autocore-reload-rpcd" && \
-echo "✓ 60-autocore-reload-rpcd 下载成功" || echo "✗ 60-autocore-reload-rpcd 下载失败"
-curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/autocore" -o "$AUTOCORE_FILES_DIR/autocore" && \
-echo "✓ autocore (script) 下载成功" || echo "✗ autocore (script) 下载失败"
-curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/cpuinfo" -o "$AUTOCORE_FILES_DIR/cpuinfo" && \
-echo "✓ cpuinfo 下载成功" || echo "✗ cpuinfo 下载失败"
-curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/luci-mod-status-autocore.json" -o "$AUTOCORE_FILES_DIR/luci-mod-status-autocore.json" && \
-echo "✓ luci-mod-status-autocore.json 下载成功" || echo "✗ luci-mod-status-autocore.json 下载失败"
-curl -fsSL "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/tempinfo" -o "$AUTOCORE_FILES_DIR/tempinfo" && \
-echo "✓ tempinfo 下载成功" || echo "✗ tempinfo 下载失败"
+mkdir -p "$AUTOCORE_FILES_DIR"
 
-# 添加编译日期标识
-# 目标文件路径
+download "$REPO_BASE_URL/$AUTOCORE_DIR/Makefile" "$AUTOCORE_DIR/Makefile"
+for file in 60-autocore-reload-rpcd autocore cpuinfo luci-mod-status-autocore.json tempinfo; do
+    download "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/$file" "$AUTOCORE_FILES_DIR/$file"
+done
+
+echo "🕒 添加编译日期"
 VER_FILE="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
-# 获取当前编译日期（YYYY-MM-DD）
 BUILD_DATE=$(date +"%Y-%m-%d")
-# 修改文件，添加编译日期
 awk -v build_date="$BUILD_DATE" '{ sub(/\(luciversion \|\| \047\047\)/, "& + \047 ( " build_date " )\047"); print }' "$VER_FILE" > "$VER_FILE.tmp" && mv "$VER_FILE.tmp" "$VER_FILE"
