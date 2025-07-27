@@ -50,7 +50,6 @@ echo "📦 替换 nftables"
 NFTABLES_DIR="package/network/utils/nftables"
 mkdir -p "$NFTABLES_DIR/patches"
 download "$REPO_BASE_URL/$NFTABLES_DIR/Makefile" "$NFTABLES_DIR/Makefile"
-download "$REPO_BASE_URL/$NFTABLES_DIR/patches/001-drop-useless-file.patch" "$NFTABLES_DIR/patches/001-drop-useless-file.patch"
 download "$REPO_BASE_URL/$NFTABLES_DIR/patches/002-nftables-add-fullcone-expression-support.patch" "$NFTABLES_DIR/patches/002-nftables-add-fullcone-expression-support.patch"
 
 echo "🔗 替换 libnftnl"
