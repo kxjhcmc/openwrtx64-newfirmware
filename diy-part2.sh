@@ -17,6 +17,9 @@ download() {
 echo "🔧 修改默认登录地址为 192.168.0.1"
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
 
+echo "🧹 删除 luci-app-cpufreq"
+rm -rf feeds/luci/applications/luci-app-cpufreq
+
 echo "🧹 替换 luci-app-passwall"
 rm -rf feeds/luci/applications/luci-app-passwall
 git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
