@@ -37,6 +37,19 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 
 REPO_BASE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master"
 
+echo "暂时修正vlmcsd哈希值"
+VLMCSD_MAKEFILE_PATH="feeds/packages/net/vlmcsd/Makefile"
+OLD_EXPECTED_HASH="0daa66c27aa917db13b26d444f04d73ea16925ef021405f5dd6e11ff9f9d034f"
+NEW_ACTUAL_HASH="a5b9854a7cb2055fa2c7890ee196a7fbbec1fd6165bf5115504d160e2e3a7a19"
+sed -i "s/PKG_MIRROR_HASH:=${OLD_EXPECTED_HASH}/PKG_MIRROR_HASH:=${NEW_ACTUAL_HASH}/g" "$VLMCSD_MAKEFILE_PATH"
+if [ $? -eq 0 ]; then
+    echo "PKG_MIRROR_HASH 已从 '${OLD_EXPECTED_HASH}' 更新为 '${NEW_ACTUAL_HASH}'。"
+else
+    echo "错误：更新 PKG_MIRROR_HASH 失败。请手动检查文件内容或权限。"
+    echo "可能的原因是旧的哈希值在文件中未找到，或者文件权限不足。"
+    exit 1
+fi
+
 echo "🧱 替换 firewall4 以支持 fullcone NAT"
 FIREWALL4_DIR="package/network/config/firewall4"
 mkdir -p "$FIREWALL4_DIR/patches"
