@@ -40,57 +40,6 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 
 REPO_BASE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master"
 
-# ==============================================================================
-# 智能修正 vlmcsd 哈希值部分 (强烈推荐使用此版本)
-# ==============================================================================
-echo "Checking and correcting vlmcsd hash value..."
-VLMCSD_MAKEFILE_PATH="feeds/packages/net/vlmcsd/Makefile"
-OLD_EXPECTED_HASH="0daa66c27aa917db13b26d444f04d73ea16925ef021405f5dd6e11ff9f9d034f"
-NEW_ACTUAL_HASH="a5b9854a7cb2055fa2c7890ee196a7fbbec1fd6165bf5115504d160e2e3a7a19" # 已根据日志修正为 165bf
-
-# 检查 Makefile 文件是否存在
-if [ ! -f "$VLMCSD_MAKEFILE_PATH" ]; then
-    echo "错误：找不到 vlmcsd 的 Makefile 文件在 '$VLMCSD_MAKEFILE_PATH'。"
-    echo "请检查路径或确保您在 OpenWrt 源代码的根目录下运行本脚本。"
-    exit 1 # 找不到关键文件，直接退出
-fi
-
-# 读取 Makefile 中当前的 PKG_MIRROR_HASH 值
-# grep -oP 提取匹配到的哈希值
-# || true 防止 grep 找不到时因 set -e 导致脚本退出
-CURRENT_HASH=$(grep -oP 'PKG_MIRROR_HASH:=\K[0-9a-fA-F]{64}' "$VLMCSD_MAKEFILE_PATH" || true)
-
-if [ "$CURRENT_HASH" == "$OLD_EXPECTED_HASH" ]; then
-    echo "检测到当前 PKG_MIRROR_HASH 为旧值：'${OLD_EXPECTED_HASH}'。"
-    # 尝试进行替换
-    sed -i "s/PKG_MIRROR_HASH:=${OLD_EXPECTED_HASH}/PKG_MIRROR_HASH:=${NEW_ACTUAL_HASH}/g" "$VLMCSD_MAKEFILE_PATH"
-    if [ $? -eq 0 ]; then
-        echo "PKG_MIRROR_HASH 已从 '${OLD_EXPECTED_HASH}' 成功更新为 '${NEW_ACTUAL_HASH}'。"
-    else
-        # 理论上，如果 sed 运行时失败，set -e 会在此之前退出。
-        # 此分支更多是防御性代码，例如 sed 版本问题。
-        echo "错误：更新 PKG_MIRROR_HASH 失败。请检查文件权限或 sed 命令。"
-        exit 1
-    fi
-elif [ "$CURRENT_HASH" == "$NEW_ACTUAL_HASH" ]; then
-    echo "PKG_MIRROR_HASH 已是目标新值 '${NEW_ACTUAL_HASH}'，无需修改。"
-elif [ -z "$CURRENT_HASH" ]; then
-    echo "警告：在 '$VLMCSD_MAKEFILE_PATH' 中未能找到 PKG_MIRROR_HASH 定义，或定义格式不正确。"
-    echo "脚本将不会进行修改，请手动检查 Makefile 内容。"
-    # 如果关键定义缺失，通常也认为是需要注意的问题
-    # exit 1 确保这类异常情况能被发现并阻止后续编译
-    exit 1
-else
-    echo "当前 PKG_MIRROR_HASH 为：'${CURRENT_HASH}'。"
-    echo "此值既不是旧值也不是目标新值，脚本将不会进行修改。"
-    echo "这可能意味着作者已经更新了不同的哈希值。请手动检查 Makefile 内容。"
-    # 如果哈希值是未知的新值，也可能意味着作者已修复，但方式不同，此时不应强制修改。
-    # 同样建议退出，以便用户检查。
-    exit 1
-fi
-echo "vlmcsd hash check and fix complete."
-# ==============================================================================
-
 echo "🧱 替换 firewall4 以支持 fullcone NAT"
 mkdir -p package/network/config/firewall4/patches # 确保 patches 目录存在
 download "$REPO_BASE_URL/package/network/config/firewall4/Makefile" "package/network/config/firewall4/Makefile"
