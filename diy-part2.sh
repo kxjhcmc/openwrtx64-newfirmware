@@ -33,6 +33,32 @@ echo "🧼 替换 passwall 相关依赖"
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,simple-obfs,tcping,trojan,trojan-go,trojan-plus,tuic-client,v2ray-plugin,xray-plugin}
 git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
 
+# ====================================================================================
+# --- 新增功能：修复 cloudflared 启动脚本 ---
+echo "⚙️ 检查并修复 cloudflared 启动脚本"
+CLOUDFLARED_INIT_FILE="feeds/packages/net/cloudflared/files/cloudflared.init"
+
+# 1. 首先检查文件是否存在，如果不存在则跳过
+if [ -f "$CLOUDFLARED_INIT_FILE" ]; then
+    # 2. 定义要查找和删除的行内容
+    LINE_TO_DELETE='procd_append_param command "run"'
+    
+    # 3. 使用 grep -q 检查该行是否存在
+    if grep -qF "$LINE_TO_DELETE" "$CLOUDFLARED_INIT_FILE"; then
+        echo "  -> 在 cloudflared.init 中发现多余的 'run' 参数，正在删除..."
+        # 4. 如果存在，使用 sed -i 按内容删除该行
+        sed -i "/$LINE_TO_DELETE/d" "$CLOUDFLARED_INIT_FILE"
+        echo "  ✓ 删除成功。"
+    else
+        echo "  -> cloudflared.init 脚本正常，无需修改。"
+    fi
+else
+    echo "  🟡 未找到 cloudflared 包或其 init 脚本，跳过此步骤。"
+fi
+# --- 新增功能结束 ---
+# ====================================================================================
+
+
 # 可选主题注释块，保留设置模板
 # echo "🎨 添加 luci-theme-argon 主题"
 # git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
