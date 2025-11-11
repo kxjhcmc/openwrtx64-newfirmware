@@ -21,20 +21,6 @@ echo "🔧 修改默认登录地址为 192.168.0.1"
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
 
 # ====================================================================================
-# 新增：修复 libwebsockets 因 CMake 版本过高导致的编译失败问题
-echo "⚙️  修复 libwebsockets 编译问题"
-LWS_MAKEFILE="feeds/packages/libs/libwebsockets/Makefile"
-if [ -f "$LWS_MAKEFILE" ]; then
-    if grep -q "CMAKE_POLICY_VERSION_MINIMUM" "$LWS_MAKEFILE"; then
-        echo "✓ libwebsockets 补丁已应用，跳过。"
-    else
-        sed -i "/include \$(INCLUDE_DIR)\/cmake.mk/a CMAKE_OPTIONS += -DCMAKE_POLICY_VERSION_MINIMUM=3.5" "$LWS_MAKEFILE"
-        echo "✓ 成功为 libwebsockets 应用 CMake 兼容性补丁。"
-    fi
-else
-    echo "⚠️  警告: 未找到 libwebsockets Makefile，跳过补丁应用。"
-fi
-# ====================================================================================
 
 echo "🧹 删除 luci-app-cpufreq"
 rm -rf feeds/luci/applications/luci-app-cpufreq
