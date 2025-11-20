@@ -7,12 +7,12 @@ set -o pipefail  # 管道中任何命令失败都会使整个管道失败
 download() {
     local url="$1"
     local dest="$2"
+    # 下载前确保目标目录存在
+    mkdir -p "$(dirname "$dest")"
     if curl -fsSL "$url" -o "$dest"; then
         echo "✓ $(basename "$dest") 下载成功"
     else
         echo "✗ $(basename "$dest") 下载失败"
-        # 如果下载失败，在 set -e 的情况下，脚本会自动退出。
-        # 如果需要更精细的错误处理，可以在这里添加 exit 1
         exit 1 # 确保下载失败时终止整个脚本
     fi
 }
@@ -35,6 +35,29 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 
 # ====================================================================================
 
+# ----------------- 新增的 Cloudflared 补丁模块 -----------------
+echo "🧩 更新 luci-app-cloudflared 界面与翻译"
+
+# 定义文件 URL 和目标路径
+CLOUDFLARED_JS_URL="https://raw.githubusercontent.com/kxjhcmc/openwrtx64-newfirmware/refs/heads/main/cloudflared/config.js"
+CLOUDFLARED_PO_URL="https://raw.githubusercontent.com/kxjhcmc/openwrtx64-newfirmware/refs/heads/main/cloudflared/cloudflared.po"
+CLOUDFLARED_APP_DIR="feeds/luci/applications/luci-app-cloudflared"
+
+# 检查 luci-app-cloudflared 目录是否存在，存在才执行替换
+if [ -d "$CLOUDFLARED_APP_DIR" ]; then
+    JS_TARGET="$CLOUDFLARED_APP_DIR/htdocs/luci-static/resources/view/cloudflared/config.js"
+    PO_TARGET="$CLOUDFLARED_APP_DIR/po/zh_Hans/cloudflared.po"
+
+    # 使用已有的 download 函数进行下载和替换
+    download "$CLOUDFLARED_JS_URL" "$JS_TARGET"
+    download "$CLOUDFLARED_PO_URL" "$PO_TARGET"
+else
+    echo "⚠️ 未找到 luci-app-cloudflared 目录，跳过更新。"
+fi
+# ----------------- Cloudflared 补丁模块结束 -----------------
+
+# ====================================================================================
+
 
 # 可选主题注释块，保留设置模板
 # echo "🎨 添加 luci-theme-argon 主题"
@@ -46,30 +69,25 @@ git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwal
 REPO_BASE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master"
 
 echo "🧱 替换 firewall4 以支持 fullcone NAT"
-mkdir -p package/network/config/firewall4/patches # 确保 patches 目录存在
 download "$REPO_BASE_URL/package/network/config/firewall4/Makefile" "package/network/config/firewall4/Makefile"
 download "$REPO_BASE_URL/package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch" "package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch"
 
 echo "🌐 添加 fullconenat-nft 支持"
-mkdir -p package/network/utils/fullconenat-nft/patches # 确保 patches 目录存在
 download "$REPO_BASE_URL/package/network/utils/fullconenat-nft/Makefile" "package/network/utils/fullconenat-nft/Makefile"
 download "$REPO_BASE_URL/package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch" "package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch"
 
 echo "📦 替换 nftables"
-mkdir -p package/network/utils/nftables/patches # 确保 patches 目录存在
 download "$REPO_BASE_URL/package/network/utils/nftables/Makefile" "package/network/utils/nftables/Makefile"
 download "$REPO_BASE_URL/package/network/utils/nftables/patches/002-nftables-add-fullcone-expression-support.patch" "package/network/utils/nftables/patches/002-nftables-add-fullcone-expression-support.patch"
 
 echo "🔗 替换 libnftnl"
-mkdir -p package/libs/libnftnl/patches # 确保 patches 目录存在
 download "$REPO_BASE_URL/package/libs/libnftnl/Makefile" "package/libs/libnftnl/Makefile"
 download "$REPO_BASE_URL/package/libs/libnftnl/patches/001-libnftnl-add-fullcone-expression-support.patch" "package/libs/libnftnl/patches/001-libnftnl-add-fullcone-expression-support.patch"
 
 echo "📡 下载 autocore 组件"
 AUTOCORE_DIR="package/emortal/autocore"
 AUTOCORE_FILES_DIR="$AUTOCORE_DIR/files"
-mkdir -p "$AUTOCORE_FILES_DIR"
-
+# 这里不需要重复创建目录，download 函数内部会处理
 download "$REPO_BASE_URL/$AUTOCORE_DIR/Makefile" "$AUTOCORE_DIR/Makefile"
 for file in 60-autocore-reload-rpcd autocore cpuinfo luci-mod-status-autocore.json tempinfo; do
     download "$REPO_BASE_URL/$AUTOCORE_FILES_DIR/$file" "$AUTOCORE_FILES_DIR/$file"
