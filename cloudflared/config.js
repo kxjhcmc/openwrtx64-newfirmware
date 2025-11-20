@@ -1,7 +1,7 @@
 /* This is free software, licensed under the Apache License, Version 2.0
  *
  * Copyright (C) 2024 Hilman Maulana <hilman0.0maulana@gmail.com>
- * Final version with UI fixes, ready for source compilation.
+ * Final version with all UI fixes, ready for source compilation.
  */
 
 'use strict';
@@ -69,7 +69,7 @@ return view.extend({
 		o.password = true;
 
 		// -- Tunnel Settings Section ---
-		o = s.option(form.DummyValue, 'tunnel_settings_title', _('Tunnel Settings'));
+		o = s.option(form.DummyValue, 'tunnel_settings_title', ''); // FIX: Set title to empty string
 		o.rawhtml = true;
 		o.cfgvalue = function() { return '<h2>' + _('Tunnel Settings') + '</h2>'; };
 		
@@ -129,7 +129,7 @@ return view.extend({
 		o.optional = true;
 
 		// -- Advanced / File Paths Section ---
-		o = s.option(form.DummyValue, 'advanced_settings_title', _('Advanced Settings'));
+		o = s.option(form.DummyValue, 'advanced_settings_title', ''); // FIX: Set title to empty string
 		o.rawhtml = true;
 		o.cfgvalue = function() { return '<h2>' + _('Advanced Settings') + '</h2>'; };
 		
@@ -150,7 +150,7 @@ return view.extend({
 		o.optional = true;
 
 		// -- Logging Section ---
-		o = s.option(form.DummyValue, 'logging_settings_title', _('Logging'));
+		o = s.option(form.DummyValue, 'logging_settings_title', ''); // FIX: Set title to empty string
 		o.rawhtml = true;
 		o.cfgvalue = function() { return '<h2>' + _('Logging') + '</h2>'; };
 
@@ -163,7 +163,7 @@ return view.extend({
 		o.value('debug', _('Debug'));
 		o.default = 'info';
 
-		o = s.option(form.Value, 'logfile', _('Log File Path'),
+		o.value('logfile', _('Log File Path'),
 			_('Path to the log file. Leave empty to log to syslog.')
 		);
 		o.placeholder = '/var/log/cloudflared.log';
