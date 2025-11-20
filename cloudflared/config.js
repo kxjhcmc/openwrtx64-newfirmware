@@ -69,7 +69,7 @@ return view.extend({
 		o.password = true;
 
 		// -- Tunnel Settings Section ---
-		o = s.option(form.DummyValue, 'tunnel_settings_title', ''); // FIX: Set title to empty string
+		o = s.option(form.DummyValue, 'tunnel_settings_title', ''); // FIX: Set left-side label to empty string
 		o.rawhtml = true;
 		o.cfgvalue = function() { return '<h2>' + _('Tunnel Settings') + '</h2>'; };
 		
@@ -129,7 +129,7 @@ return view.extend({
 		o.optional = true;
 
 		// -- Advanced / File Paths Section ---
-		o = s.option(form.DummyValue, 'advanced_settings_title', ''); // FIX: Set title to empty string
+		o = s.option(form.DummyValue, 'advanced_settings_title', ''); // FIX: Set left-side label to empty string
 		o.rawhtml = true;
 		o.cfgvalue = function() { return '<h2>' + _('Advanced Settings') + '</h2>'; };
 		
@@ -150,7 +150,7 @@ return view.extend({
 		o.optional = true;
 
 		// -- Logging Section ---
-		o = s.option(form.DummyValue, 'logging_settings_title', ''); // FIX: Set title to empty string
+		o = s.option(form.DummyValue, 'logging_settings_title', ''); // FIX: Set left-side label to empty string
 		o.rawhtml = true;
 		o.cfgvalue = function() { return '<h2>' + _('Logging') + '</h2>'; };
 
@@ -163,7 +163,8 @@ return view.extend({
 		o.value('debug', _('Debug'));
 		o.default = 'info';
 
-		o.value('logfile', _('Log File Path'),
+		// SYNTAX FIX: This must be a new s.option, not a continuation of the previous 'o'
+		o = s.option(form.Value, 'logfile', _('Log File Path'),
 			_('Path to the log file. Leave empty to log to syslog.')
 		);
 		o.placeholder = '/var/log/cloudflared.log';
