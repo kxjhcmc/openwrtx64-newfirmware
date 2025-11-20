@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: luci-app-cloudflared\n"
+"PO-Revision-Date: 2025-11-20 12:30+0000\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language-Team: Chinese\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Cloudflare Tunnel"
+msgstr "Cloudflare 隧道"
+
+msgid "Cloudflare Tunnel services help you get maximum security both from outside and within the network."
+msgstr "Cloudflare 隧道服务可帮助您从网络外部和内部获得最高级别的安全性。"
+
+msgid "Create and manage your network on the <a %s>Cloudflare Zero Trust</a> dashboard."
+msgstr "在 <a %s>Cloudflare 零信任</a> 仪表板上创建和管理您的网络。"
+
+msgid "See <a %s>documentation</a>."
+msgstr "参见<a %s>文档</a>。"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Running"
+msgstr "运行中"
+
+msgid "Not Running"
+msgstr "未运行"
+
+msgid "Enable"
+msgstr "启用"
+
+msgid "Token"
+msgstr "Token"
+
+msgid "The tunnel token is shown in the dashboard once you create a tunnel."
+msgstr "创建隧道后，仪表板中会显示隧道 Token。"
+
+msgid "Tunnel Settings"
+msgstr "隧道设置"
+
+msgid "Protocol"
+msgstr "协议"
+
+msgid "Protocol used to connect to Cloudflare edge. QUIC is recommended for performance."
+msgstr "用于连接到 Cloudflare 边缘的协议。为获得更好性能，推荐使用 QUIC。"
+
+msgid "Region"
+msgstr "区域"
+
+msgid "Connect to a specific Cloudflare region. Leave empty for automatic selection."
+msgstr "连接到指定的 Cloudflare 区域。留空则自动选择。"
+
+msgid "Edge Bind Address"
+msgstr "边缘绑定地址"
+
+msgid "The local address to bind for connections to the Cloudflare edge."
+msgstr "为连接到 Cloudflare 边缘而绑定的本地地址。"
+
+msgid "Edge IP Version"
+msgstr "边缘 IP 版本"
+
+msgid "The IP version to use for connecting to the Cloudflare edge."
+msgstr "用于连接到 Cloudflare 边缘的 IP 版本。"
+
+msgid "auto"
+msgstr "自动"
+
+msgid "Auto"
+msgstr "自动"
+
+msgid "ipv4-only"
+msgstr "仅 IPv4"
+
+msgid "ipv6-only"
+msgstr "仅 IPv6"
+
+msgid "Connect Retries"
+msgstr "连接重试次数"
+
+msgid "Maximum number of retries for connection failures."
+msgstr "连接失败时的最大重试次数。"
+
+msgid "Grace Period"
+msgstr "优雅关停等待时间"
+
+msgid "Wait for this duration before shutting down the tunnel (e.g., 30s)."
+msgstr "关闭隧道前等待连接正常断开的时间 (例如: 30s)。"
+
+msgid "Tags"
+msgstr "标签"
+
+msgid "Key-value pairs for annotating the tunnel. Comma-separated (e.g., ENV=staging,TEAM=web)."
+msgstr "用于注释隧道的键值对，使用逗号分隔 (例如: ENV=staging,TEAM=web)。"
+
+msgid "Metrics Server Address"
+msgstr "Metrics 服务地址"
+
+msgid "Address to expose Prometheus metrics on (e.g., 127.0.0.1:9090)."
+msgstr "用于暴露 Prometheus metrics 的地址 (例如: 127.0.0.1:9090)。"
+
+msgid "Advanced Settings"
+msgstr "高级设置"
+
+msgid "Custom config.yml path"
+msgstr "自定义配置文件路径"
+
+msgid "Path to a custom YAML configuration file. If used, the token and most other options here are ignored."
+msgstr "指向自定义 YAML 配置文件的路径。使用此选项后，Token 和此处的大部分其他设置将被忽略。"
+
+msgid "Origin Certificate path"
+msgstr "源证书路径"
+
+msgid "Path to the origin certificate for a named tunnel without a token."
+msgstr "隧道的源证书路径。对于没有 Token 的命名隧道是必需的。"
+
+msgid "Obtain a certificate <a %s>here</a>."
+msgstr "在<a %s>此处</a>获取证书。"
+
+msgid "Logging"
+msgstr "日志"
+
+msgid "Log Level"
+msgstr "日志级别"
+
+msgid "Panic"
+msgstr "Panic"
+
+msgid "Fatal"
+msgstr "Fatal"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Warn"
+msgstr "警告"
+
+msgid "Info"
+msgstr "信息"
+
+msgid "Debug"
+msgstr "调试"
+
+msgid "Log File Path"
+msgstr "日志文件路径"
+
+msgid "Path to the log file. Leave empty to log to syslog."
+msgstr "日志文件的路径。留空则输出到系统日志。"
