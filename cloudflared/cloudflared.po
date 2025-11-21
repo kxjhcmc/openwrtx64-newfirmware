@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: luci-app-cloudflared\n"
-"PO-Revision-Date: 2025-11-20 13:30+0000\n"
+"PO-Revision-Date: 2025-11-20 13:45+0000\n"
 "Last-Translator: Your Name <your.email@example.com>\n"
 "Language-Team: Chinese\n"
 "Language: zh_Hans\n"
@@ -142,21 +142,22 @@ msgstr "源证书路径"
 msgid "Path to the origin certificate for a named tunnel without a token."
 msgstr "隧道的源证书路径。对于没有 Token 的命名隧道是必需的。"
 
-msgid "Obtain a certificate <a %s>here</a>."
-msgstr "在<a %s>此处</a>获取证书。"
+msgid "Obtain a certificate <a %s>here</a>.": "在<a %s>此处</a>获取证书。"
 
 # --- Logging Options ---
 msgid "Logging level"
-msgstr "日志级别" # Old, replaced by "Log Level"
+msgstr "日志级别"
 
 msgid "Log Level"
 msgstr "日志级别"
 
 msgid "Panic"
-msgstr "Panic"
+msgstr "Panic" # Fix: Now with Chinese translation
+msgstr_plural "紧急"
 
 msgid "Fatal"
-msgstr "Fatal"
+msgstr "Fatal" # Fix: Now with Chinese translation
+msgstr_plural "致命"
 
 msgid "Error"
 msgstr "错误"
