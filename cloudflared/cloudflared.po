@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: luci-app-cloudflared\n"
-"PO-Revision-Date: 2025-11-20 12:30+0000\n"
+"PO-Revision-Date: 2025-11-20 13:30+0000\n"
 "Last-Translator: Your Name <your.email@example.com>\n"
 "Language-Team: Chinese\n"
 "Language: zh_Hans\n"
@@ -10,11 +10,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+# --- Menu and Tab Titles ---
+msgid "Cloudflare Zero Trust Tunnel"
+msgstr "Cloudflare 零信任隧道"
+
+msgid "Configuration"
+msgstr "配置"
+
+msgid "Tunnels"
+msgstr "隧道"
+
+msgid "Log"
+msgstr "日志"
+
+# --- Main Page Titles and Descriptions ---
 msgid "Cloudflare Tunnel"
 msgstr "Cloudflare 隧道"
 
 msgid "Cloudflare Tunnel services help you get maximum security both from outside and within the network."
 msgstr "Cloudflare 隧道服务可帮助您从网络外部和内部获得最高级别的安全性。"
+
+msgid "Cloudflare Zero Trust Security services help you get maximum security both from outside and within the network."
+msgstr "Cloudflare 零信任安全服务帮助你从网络内外部获取最大程度的安全性。"
 
 msgid "Create and manage your network on the <a %s>Cloudflare Zero Trust</a> dashboard."
 msgstr "在 <a %s>Cloudflare 零信任</a> 仪表板上创建和管理您的网络。"
@@ -22,6 +39,7 @@ msgstr "在 <a %s>Cloudflare 零信任</a> 仪表板上创建和管理您的网�
 msgid "See <a %s>documentation</a>."
 msgstr "参见<a %s>文档</a>。"
 
+# --- General and Status ---
 msgid "Status"
 msgstr "状态"
 
@@ -40,9 +58,17 @@ msgstr "Token"
 msgid "The tunnel token is shown in the dashboard once you create a tunnel."
 msgstr "创建隧道后，仪表板中会显示隧道 Token。"
 
+# --- Section Titles ---
 msgid "Tunnel Settings"
 msgstr "隧道设置"
 
+msgid "Advanced Settings"
+msgstr "高级设置"
+
+msgid "Logging"
+msgstr "日志"
+
+# --- Tunnel Setting Options ---
 msgid "Protocol"
 msgstr "协议"
 
@@ -103,9 +129,7 @@ msgstr "Metrics 服务地址"
 msgid "Address to expose Prometheus metrics on (e.g., 127.0.0.1:9090)."
 msgstr "用于暴露 Prometheus metrics 的地址 (例如: 127.0.0.1:9090)。"
 
-msgid "Advanced Settings"
-msgstr "高级设置"
-
+# --- Advanced Setting Options ---
 msgid "Custom config.yml path"
 msgstr "自定义配置文件路径"
 
@@ -121,8 +145,9 @@ msgstr "隧道的源证书路径。对于没有 Token 的命名隧道是必需�
 msgid "Obtain a certificate <a %s>here</a>."
 msgstr "在<a %s>此处</a>获取证书。"
 
-msgid "Logging"
-msgstr "日志"
+# --- Logging Options ---
+msgid "Logging level"
+msgstr "日志级别" # Old, replaced by "Log Level"
 
 msgid "Log Level"
 msgstr "日志级别"
@@ -150,3 +175,56 @@ msgstr "日志文件路径"
 
 msgid "Path to the log file. Leave empty to log to syslog."
 msgstr "日志文件的路径。留空则输出到系统日志。"
+
+# --- Tunnels Page specific ---
+msgid "Tunnels Information"
+msgstr "隧道信息"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "Created At"
+msgstr "创建于"
+
+msgid "Connections"
+msgstr "连接"
+
+msgid "Connection ID"
+msgstr "连接 ID"
+
+msgid "Origin IP"
+msgstr "源 IP"
+
+msgid "Opened At"
+msgstr "连接时间"
+
+msgid "Data Center"
+msgstr "数据中心"
+
+msgid "No connections"
+msgstr "无连接"
+
+# --- Log Page specific ---
+msgid "All"
+msgstr "全部"
+
+msgid "Filter Level:"
+msgstr "过滤等级："
+
+msgid "Log Direction:"
+msgstr "日志呈现时序："
+
+msgid "Download Log"
+msgstr "下载日志"
+
+msgid "Down"
+msgstr "↓"
+
+msgid "Up"
+msgstr "↑"
+
+msgid "Unable to read the interface info from /var/log/cloudflared.log."
+msgstr "无法从 /var/log/cloudflared.log 中读取接口信息。"
