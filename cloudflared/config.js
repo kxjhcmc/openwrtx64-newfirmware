@@ -85,7 +85,7 @@ return view.extend({
 		o = s.option(form.Value, 'region', _('Region'),
 			_('Connect to a specific Cloudflare region. Leave empty for automatic selection.')
 		);
-		o.placeholder = 'us-east-1';
+		o.placeholder = 'us';
 		o.optional = true;
 
 		o = s.option(form.Value, 'edge_bind_address', _('Edge Bind Address'),
