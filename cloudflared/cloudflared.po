@@ -152,12 +152,10 @@ msgid "Log Level"
 msgstr "日志级别"
 
 msgid "Panic"
-msgstr "Panic" # Fix: Now with Chinese translation
-msgstr_plural "紧急"
+msgstr "紧急" 
 
 msgid "Fatal"
-msgstr "Fatal" # Fix: Now with Chinese translation
-msgstr_plural "致命"
+msgstr "致命" 
 
 msgid "Error"
 msgstr "错误"
