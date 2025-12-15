@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# update_cloudflared.sh
-# 放在 OpenWrt 根目录运行
-# 自动检查 cloudflared 最新版本，并更新 feeds/packages/net/cloudflared/Makefile
-
 MAKEFILE="feeds/packages/net/cloudflared/Makefile"
 GITHUB_API_URL="https://api.github.com/repos/cloudflare/cloudflared/releases/latest"
 
@@ -14,12 +10,6 @@ for cmd in curl jq sha256sum; do
         exit 1
     fi
 done
-
-# 检查 Makefile 是否存在
-if [ ! -f "$MAKEFILE" ]; then
-    echo "错误：找不到 Makefile: $MAKEFILE"
-    exit 1
-fi
 
 # 获取最新版本号
 echo "正在检查 cloudflared 最新版本..."
@@ -44,11 +34,12 @@ if [ "$LATEST_VERSION" = "$CURRENT_VERSION" ]; then
     exit 0
 fi
 
-# 获取最新版本的 SHA256 哈希值
+# 获取最新版本的 SHA256 哈希值（使用与 OpenWrt 完全一致的 URL）
 echo "正在下载源码包并计算 SHA256 哈希值..."
 TARBALL_URL="https://codeload.github.com/cloudflare/cloudflared/tar.gz/$LATEST_VERSION"
 TMP_FILE="/tmp/cloudflared-$LATEST_VERSION.tar.gz"
-curl -s -L -o $TMP_FILE $TARBALL_URL
+# 禁用自动重定向和解压，确保下载原始文件
+curl -s -L -H "Accept: application/octet-stream" -o $TMP_FILE "$TARBALL_URL"
 if [ $? -ne 0 ]; then
     echo "错误：下载源码包失败。"
     exit 1
