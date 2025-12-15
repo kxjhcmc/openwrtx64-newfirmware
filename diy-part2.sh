@@ -59,9 +59,9 @@ fi
 # ====================================================================================
 # 🔄 调用 update_cloudflared.sh 更新 cloudflared 版本
 echo "🔄 正在检查并更新 cloudflared 版本..."
-if [ -f "./update_cloudflared.sh" ]; then
-    chmod +x ./update_cloudflared.sh
-    ./update_cloudflared.sh
+if [ -f "$GITHUB_WORKSPACE/update_cloudflared.sh" ]; then
+    chmod +x "$GITHUB_WORKSPACE/update_cloudflared.sh"
+    "$GITHUB_WORKSPACE/update_cloudflared.sh"
 else
     echo "⚠️ 未找到 update_cloudflared.sh 脚本，跳过更新。"
 fi
