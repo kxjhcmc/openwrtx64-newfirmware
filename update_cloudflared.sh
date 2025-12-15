@@ -46,7 +46,7 @@ fi
 
 # 获取最新版本的 SHA256 哈希值
 echo "正在下载源码包并计算 SHA256 哈希值..."
-TARBALL_URL="https://codeload.github.com/cloudflare/cloudflared/tar.gz/v$LATEST_VERSION"
+TARBALL_URL="https://codeload.github.com/cloudflare/cloudflared/tar.gz/$LATEST_VERSION"
 TMP_FILE="/tmp/cloudflared-$LATEST_VERSION.tar.gz"
 curl -s -L -o $TMP_FILE $TARBALL_URL
 if [ $? -ne 0 ]; then
