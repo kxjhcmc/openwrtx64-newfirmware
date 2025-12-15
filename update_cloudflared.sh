@@ -38,7 +38,6 @@ fi
 echo "正在下载源码包并计算 SHA256 哈希值..."
 TARBALL_URL="https://codeload.github.com/cloudflare/cloudflared/tar.gz/$LATEST_VERSION"
 TMP_FILE="/tmp/cloudflared-$LATEST_VERSION.tar.gz"
-# 禁用自动重定向和解压，确保下载原始文件
 curl -s -L -H "Accept: application/octet-stream" -o $TMP_FILE "$TARBALL_URL"
 if [ $? -ne 0 ]; then
     echo "错误：下载源码包失败。"
