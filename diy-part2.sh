@@ -77,10 +77,17 @@ else
 fi
 # ====================================================================================
 
-# ===================== 临时回退 package.mk 修改 =====================
-echo "🔧 临时回退 package.mk compile 依赖修改"
-sed -i 's/compile: prepare-package-install/compile:/' include/package.mk || true
-echo "✅ package.mk 修改已回退"
+# ===================== 安全回退 package.mk 修改 =====================
+PACKAGE_MK="include/package.mk"
+
+# 先检查 compile: 后面是否为 prepare-package-install
+if grep -qE '^compile:.*prepare-package-install' "$PACKAGE_MK"; then
+    echo "🔧 package.mk 当前包含 prepare-package-install，临时回退..."
+    sed -i 's/^\(compile:\).*prepare-package-install/\1/' "$PACKAGE_MK"
+    echo "✅ package.mk 临时回退完成"
+else
+    echo "ℹ️ package.mk 已被修改或官方修复，跳过临时回退"
+fi
 # ===================================================================
 
 # 可选主题注释块，保留设置模板
