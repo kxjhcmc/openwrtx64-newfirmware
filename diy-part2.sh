@@ -77,6 +77,12 @@ else
 fi
 # ====================================================================================
 
+# ===================== 临时回退 package.mk 修改 =====================
+echo "🔧 临时回退 package.mk compile 依赖修改"
+sed -i 's/compile: prepare-package-install/compile:/' include/package.mk || true
+echo "✅ package.mk 修改已回退"
+# ===================================================================
+
 # 可选主题注释块，保留设置模板
 # echo "🎨 添加 luci-theme-argon 主题"
 # git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
