@@ -68,13 +68,13 @@ fi
 # ====================================================================================
 
 # 🔄 调用 update_go.sh 自动更新 Golang 版本（解决 xray 依赖问题）
-echo "🔄 正在检查并更新 Golang 版本..."
-if [ -f "$GITHUB_WORKSPACE/update_go.sh" ]; then
-    chmod +x "$GITHUB_WORKSPACE/update_go.sh"
-    "$GITHUB_WORKSPACE/update_go.sh"
-else
-    echo "⚠️ 未找到 update_go.sh 脚本，跳过更新。"
-fi
+#echo "🔄 正在检查并更新 Golang 版本..."
+#if [ -f "$GITHUB_WORKSPACE/update_go.sh" ]; then
+#    chmod +x "$GITHUB_WORKSPACE/update_go.sh"
+#    "$GITHUB_WORKSPACE/update_go.sh"
+#else
+#    echo "⚠️ 未找到 update_go.sh 脚本，跳过更新。"
+#fi
 # ====================================================================================
 
 # 可选主题注释块，保留设置模板
