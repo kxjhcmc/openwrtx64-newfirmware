@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAKEFILE="feeds/packages/lang/golang/golang/Makefile"
+MAKEFILE="feeds/packages/lang/golang/golang1.25/Makefile"
 
 # 1. 获取官方最新版本 JSON
 GO_DATA=$(curl -s https://go.dev/dl/?mode=json | jq -r '[.[] | select(.stable==true)][0]')
