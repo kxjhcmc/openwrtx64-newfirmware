@@ -64,7 +64,7 @@ jobs:
         homebrew_clean: "True"
         npm_prune: "True"
         npm_clean: "True"
-        os_swap: "True"
+        os_swap: "False"
 
     - name: Freeing up disk space
       uses: easimon/maximize-build-space@master
