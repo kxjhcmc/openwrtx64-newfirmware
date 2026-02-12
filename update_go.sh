@@ -62,7 +62,13 @@ sed -i "s/^GO_VERSION_PATCH:=.*/GO_VERSION_PATCH:=$PATCH/" "$MAKEFILE"
 sed -i "s/^PKG_HASH:=.*/PKG_HASH:=$PKG_HASH/" "$MAKEFILE"
 sed -i "s/^PKG_RELEASE:=.*/PKG_RELEASE:=1/" "$MAKEFILE"
 
-# 4. 切换系统默认 Go 版本
+# 4. 关键步骤：在 package 目录下创建软链接，让 OpenWrt 识别新包
+echo "🔗 正在注册新包 golang$MAJOR_MINOR 到构建系统..."
+./scripts/feeds install "golang$MAJOR_MINOR"
+# 同时也重新安装一下 dummy 包，确保依赖关系刷新
+./scripts/feeds install golang
+
+# 5. 切换系统默认 Go 版本
 echo "⚙️ 正在修改 $VALUES_MK 设置默认版本为 $MAJOR_MINOR..."
 sed -i "s/^GO_DEFAULT_VERSION:=.*/GO_DEFAULT_VERSION:=$MAJOR_MINOR/" "$VALUES_MK"
 
