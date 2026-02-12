@@ -3,6 +3,7 @@ set -e
 set -u
 set -o pipefail
 
+# 工具函数
 download() {
     local url="$1"
     local dest="$2"
@@ -13,27 +14,23 @@ download() {
 echo "🔧 修改默认登录地址为 192.168.0.1"
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
 
-echo "📦 拉取最新版 Passwall 仓库到 package 目录"
-# 因为 Part 1 已经删除了 feeds 里的旧版，这里克隆的新版将生效
+echo "📦 重新下载最新版 Passwall (克隆到 package 目录以获得最高优先级)"
 git clone https://github.com/Openwrt-Passwall/openwrt-passwall package/openwrt-passwall
 git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
 
-echo "🧱 替换系统核心组件 (Firewall4, nftables, libnftnl) 以支持 Fullcone NAT"
+echo "🧱 替换核心组件：Firewall4, nftables, libnftnl (支持 fullcone NAT)"
 REPO_BASE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master"
 
-# Firewall4
+# Firewall4, nftables, libnftnl, fullconenat-nft
 download "$REPO_BASE_URL/package/network/config/firewall4/Makefile" "package/network/config/firewall4/Makefile"
 download "$REPO_BASE_URL/package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch" "package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch"
 
-# fullconenat-nft
 download "$REPO_BASE_URL/package/network/utils/fullconenat-nft/Makefile" "package/network/utils/fullconenat-nft/Makefile"
 download "$REPO_BASE_URL/package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch" "package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch"
 
-# nftables
 download "$REPO_BASE_URL/package/network/utils/nftables/Makefile" "package/network/utils/nftables/Makefile"
 download "$REPO_BASE_URL/package/network/utils/nftables/patches/002-nftables-add-fullcone-expression-support.patch" "package/network/utils/nftables/patches/002-nftables-add-fullcone-expression-support.patch"
 
-# libnftnl
 download "$REPO_BASE_URL/package/libs/libnftnl/Makefile" "package/libs/libnftnl/Makefile"
 download "$REPO_BASE_URL/package/libs/libnftnl/patches/001-libnftnl-add-fullcone-expression-support.patch" "package/libs/libnftnl/patches/001-libnftnl-add-fullcone-expression-support.patch"
 
@@ -43,5 +40,19 @@ download "$REPO_BASE_URL/$AUTOCORE_DIR/Makefile" "$AUTOCORE_DIR/Makefile"
 for file in 60-autocore-reload-rpcd autocore cpuinfo luci-mod-status-autocore.json tempinfo; do
     download "$REPO_BASE_URL/$AUTOCORE_DIR/files/$file" "$AUTOCORE_DIR/files/$file"
 done
+
+echo "🧩 应用 Cloudflared UI 翻译和界面补丁"
+CLOUDFLARED_APP_DIR="feeds/luci/applications/luci-app-cloudflared"
+if [ -d "$CLOUDFLARED_APP_DIR" ]; then
+    download "https://raw.githubusercontent.com/kxjhcmc/openwrtx64-newfirmware/refs/heads/main/cloudflared/config.js" "$CLOUDFLARED_APP_DIR/htdocs/luci-static/resources/view/cloudflared/config.js"
+    download "https://raw.githubusercontent.com/kxjhcmc/openwrtx64-newfirmware/refs/heads/main/cloudflared/cloudflared.po" "$CLOUDFLARED_APP_DIR/po/zh_Hans/cloudflared.po"
+fi
+
+echo "🕒 添加编译日期"
+VER_FILE="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
+if [ -f "$VER_FILE" ]; then
+    BUILD_DATE=$(date +"%Y-%m-%d")
+    awk -v build_date="$BUILD_DATE" '{ sub(/\(luciversion \|\| \047\047\)/, "& + \047 ( " build_date " )\047"); print }' "$VER_FILE" > "$VER_FILE.tmp" && mv "$VER_FILE.tmp" "$VER_FILE"
+fi
 
 echo "✅ Post-Feeds 阶段执行完毕"
