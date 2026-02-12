@@ -10,6 +10,16 @@
 # Description: OpenWrt DIY script part 1 (Before Update feeds)
 #
 
+# 🔄 调用 update_go.sh 自动更新 Golang 版本（解决 xray 依赖问题）
+echo "🔄 正在检查并更新 Golang 版本..."
+if [ -f "$GITHUB_WORKSPACE/update_go.sh" ]; then
+    chmod +x "$GITHUB_WORKSPACE/update_go.sh"
+    "$GITHUB_WORKSPACE/update_go.sh"
+else
+    echo "⚠️ 未找到 update_go.sh 脚本，跳过更新。"
+fi
+# ====================================================================================
+
 # Uncomment a feed source
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
 #暂时跳过版本号检测
