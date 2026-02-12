@@ -3,7 +3,6 @@ set -e
 set -u
 set -o pipefail
 
-# 定义路径
 BASE_DIR="feeds/packages/lang/golang"
 VALUES_MK="$BASE_DIR/golang-values.mk"
 BOOTSTRAP_MAKEFILE="$BASE_DIR/golang-bootstrap/Makefile"
@@ -14,59 +13,52 @@ CURL_OPTIONS=""
 echo "🛠️ 开始执行 Golang 自动更新脚本..."
 
 # --- 辅助函数 ---
-check_json_data() {
-    if [ "$(echo "$1" | jq 'length')" -eq 0 ]; then
-        echo "❌ 错误: 无法获取有效的 Go 版本列表。"
-        exit 1
-    fi
-}
-
 get_go_pkg_hash() {
     local hash=$(echo "$1" | jq -r '.files[] | select(.kind=="source") | .sha256')
-    [ -z "$hash" ] || [ "$hash" == "null" ] && { echo "❌ 错误: 无法提取源码哈希。"; exit 1; }
     echo "$hash"
 }
 
 # --- 1. 获取最新版本信息 ---
 echo "🌐 正在检查官方最新稳定版本..."
 STABLE_JSON=$(curl -s "$CURL_OPTIONS" "$GO_API_URL" | jq -r '[.[] | select(.stable==true)]')
-check_json_data "$STABLE_JSON" "$GO_API_URL"
-
 GO_DATA=$(echo "$STABLE_JSON" | jq -r '.[0]')
 FULL_VER=$(echo "$GO_DATA" | jq -r '.version' | sed 's/go//')
 MAJOR_MINOR=$(echo "$FULL_VER" | cut -d. -f1,2)
 PATCH=$(echo "$FULL_VER" | cut -d. -f3); PATCH=${PATCH:-0}
 PKG_HASH=$(get_go_pkg_hash "$GO_DATA")
 
-TARGET_GO_MM_INT=$(echo "$MAJOR_MINOR" | sed 's/\.//')
+# 转换为整数方便比较 (如 1.26 -> 126)
+TARGET_MM_INT=$(echo "$MAJOR_MINOR" | sed 's/\.//')
 TARGET_DIR="$BASE_DIR/golang$MAJOR_MINOR"
 MAKEFILE="$TARGET_DIR/Makefile"
 
-echo "🔎 目标版本: $FULL_VER"
+echo "🔎 官网最新版本: $FULL_VER"
 
-# --- 2. 检查并更新 golang-bootstrap ---
+# --- 2. 判定并处理 golang-bootstrap (按需更新) ---
 echo "---------------------------------------------------------"
-echo "⚙️ 正在检查 golang-bootstrap..."
+echo "⚙️ 检查 golang-bootstrap 兼容性..."
 
-REQ_MM_INT=$((TARGET_GO_MM_INT - 2))
-REQ_MM="1.$((REQ_MM_INT - 100))"
+# 计算最低引导要求 (N-2)
+REQ_MM_INT=$((TARGET_MM_INT - 2))
+REQ_MM_STR="1.$((REQ_MM_INT - 100))"
 
-# 引导器选择：精准匹配 N-2 或取列表最老的一个稳定版
-BOOTSTRAP_GO_DATA=$(echo "$STABLE_JSON" | jq -r --arg req "go$REQ_MM" \
-  '([.[] | select(.version | startswith($req))] | first) // .[-1]')
+# 读取本地当前 bootstrap 版本
+L_B_MM=$(grep -E "^GO_VERSION_MAJOR_MINOR\s*[:?]=" "$BOOTSTRAP_MAKEFILE" | head -n1 | cut -d= -f2 | tr -d '[:space:]' || echo "1.0")
+L_B_MM_INT=$(echo "$L_B_MM" | sed 's/\.//')
 
-B_FULL_VER=$(echo "$BOOTSTRAP_GO_DATA" | jq -r '.version' | sed 's/go//')
-B_MM=$(echo "$B_FULL_VER" | cut -d. -f1,2)
-B_PATCH=$(echo "$B_FULL_VER" | cut -d. -f3); B_PATCH=${B_PATCH:-0}
-B_HASH=$(get_go_pkg_hash "$BOOTSTRAP_GO_DATA")
+echo "当前引导器: Go $L_B_MM, 目标编译器要求: >= Go $REQ_MM_STR"
 
-# 精准读取本地 bootstrap 版本
-L_B_MM=$(grep -E "^GO_VERSION_MAJOR_MINOR\s*[:?]=" "$BOOTSTRAP_MAKEFILE" | head -n1 | cut -d= -f2 | tr -d '[:space:]' || echo "0.0")
-L_B_P=$(grep -E "^GO_VERSION_PATCH\s*[:?]=" "$BOOTSTRAP_MAKEFILE" | head -n1 | cut -d= -f2 | tr -d '[:space:]' || echo "0")
+if [ "$L_B_MM_INT" -lt "$REQ_MM_INT" ]; then
+    echo "🔄 当前引导器版本过低，正在升级 bootstrap..."
+    # 选一个合适的稳定版作为新的引导器 (N-2 或列表最老的一个)
+    B_GO_DATA=$(echo "$STABLE_JSON" | jq -r --arg req "go$REQ_MM_STR" \
+      '([.[] | select(.version | startswith($req))] | first) // .[-1]')
+    
+    B_FULL_VER=$(echo "$B_GO_DATA" | jq -r '.version' | sed 's/go//')
+    B_MM=$(echo "$B_FULL_VER" | cut -d. -f1,2)
+    B_PATCH=$(echo "$B_FULL_VER" | cut -d. -f3); B_PATCH=${B_PATCH:-0}
+    B_HASH=$(get_go_pkg_hash "$B_GO_DATA")
 
-if [ "$B_FULL_VER" != "$L_B_MM.$L_B_P" ]; then
-    echo "🔄 更新 bootstrap: $L_B_MM.$L_B_P -> $B_FULL_VER"
-    # 使用精准正则替换，防止误伤。注意 PKG_HASH 必须匹配行首
     sed -i -E "s/^(GO_VERSION_MAJOR_MINOR\s*[:?]=\s*).*/\1$B_MM/" "$BOOTSTRAP_MAKEFILE"
     sed -i -E "s/^(GO_VERSION_PATCH\s*[:?]=\s*).*/\1$B_PATCH/" "$BOOTSTRAP_MAKEFILE"
     sed -i -E "s/^(PKG_HASH\s*[:?]=\s*).*/\1$B_HASH/" "$BOOTSTRAP_MAKEFILE"
@@ -74,57 +66,54 @@ if [ "$B_FULL_VER" != "$L_B_MM.$L_B_P" ]; then
     
     rm -f "$(dirname "$BOOTSTRAP_MAKEFILE")/.built"
     ./scripts/feeds install golang-bootstrap
+    echo "🚀 bootstrap 已成功升级至 $B_FULL_VER"
 else
-    echo "✅ bootstrap 已是最新。"
+    echo "✅ 现有引导器符合要求，跳过更新。"
 fi
 
-# --- 3. 更新主 Golang 版本 ---
+# --- 3. 检查并更新主 Golang 版本 ---
 echo "---------------------------------------------------------"
-echo "🌐 正在检查 $MAJOR_MINOR ..."
+echo "🌐 检查主程序 $MAJOR_MINOR 状态..."
 NEEDS_REFRESH=false
 
 if [ ! -d "$TARGET_DIR" ]; then 
-    echo "⚠️ 发现大版本跳跃，创建 $TARGET_DIR..."
+    echo "⚠️ 发现大版本跳跃，正在初始化 $TARGET_DIR ..."
     LATEST_OLD=$(ls -d $BASE_DIR/golang1.* 2>/dev/null | sort -V | tail -n1)
     cp -r "$LATEST_OLD" "$TARGET_DIR"
-    
-    # 基础修改
     sed -i -E "s/^(PKG_NAME\s*[:?]=\s*).*/\1golang$MAJOR_MINOR/" "$MAKEFILE"
     sed -i -E "s/^(GO_VERSION_MAJOR_MINOR\s*[:?]=\s*).*/\1$MAJOR_MINOR/" "$MAKEFILE"
     rm -rf "$TARGET_DIR/patches"
-
-    # ✨ 核心修复：仅针对 HOST_GO_VALID_OS_ARCH 这一块内容执行下划线到斜杠的转换
-    # 这样就不会误伤 PKG_HASH 和 INCLUDE_DIR 了
-    echo "🔧 正在转换架构列表格式 (仅限特定区块)..."
+    
+    # 架构格式转换 (仅限架构区块，防止误伤)
     sed -i -E '/^HOST_GO_VALID_OS_ARCH:=/,/^[[:space:]]*$/ s/([a-z0-9]+)_([a-z0-9]+)/\1\/\2/g' "$MAKEFILE"
-    
-    # 修正可能被误改的其他关键变量（保险措施）
-    sed -i 's/GO\/VERSION/GO_VERSION/g' "$MAKEFILE"
-    sed -i 's/PKG\/HASH/PKG_HASH/g' "$MAKEFILE"
-    sed -i 's/PKG\/NAME/PKG_NAME/g' "$MAKEFILE"
-    
     NEEDS_REFRESH=true
 fi
 
-# 精准读取本地主版本 Patch
-L_P=$(grep -E "^GO_VERSION_PATCH\s*[:?]=" "$MAKEFILE" | head -n1 | cut -d= -f2 | tr -d '[:space:]' || echo "0")
+# 读取本地主版本补丁号
+L_P=$(grep -E "^GO_VERSION_PATCH\s*[:?]=" "$MAKEFILE" | head -n1 | cut -d= -f2 | tr -d '[:space:]' || echo "-1")
 
 if [ "$PATCH" != "$L_P" ]; then
-    echo "🔄 更新 $MAJOR_MINOR 到小版本 $PATCH ..."
+    echo "🔄 发现新补丁/版本，更新 Makefile: $MAJOR_MINOR.$L_P -> $FULL_VER"
     sed -i -E "s/^(GO_VERSION_PATCH\s*[:?]=\s*).*/\1$PATCH/" "$MAKEFILE"
     sed -i -E "s/^(PKG_HASH\s*[:?]=\s*).*/\1$PKG_HASH/" "$MAKEFILE"
     sed -i -E "s/^(PKG_RELEASE\s*[:?]=\s*).*/\11/" "$MAKEFILE"
 else
-    echo "✅ $MAJOR_MINOR 内容已是最新。"
+    echo "✅ $MAJOR_MINOR 已经是最新版 ($FULL_VER)。"
 fi
 
-# --- 4. 默认版本开关 ---
+# --- 4. 默认版本开关维护 ---
 if [ -f "$VALUES_MK" ]; then
-    echo "🔧 设置默认版本为 $MAJOR_MINOR"
-    sed -i -E "s/^(GO_DEFAULT_VERSION\s*[:?]=\s*).*/\1$MAJOR_MINOR/" "$VALUES_MK"
+    # 检查当前默认版本是否需要切换
+    L_DEF_MM=$(grep -E "^GO_DEFAULT_VERSION\s*[:?]=" "$VALUES_MK" | cut -d= -f2 | tr -d '[:space:]' || echo "")
+    if [ "$L_DEF_MM" != "$MAJOR_MINOR" ]; then
+        echo "🔧 切换系统默认 Go 版本: $L_DEF_MM -> $MAJOR_MINOR"
+        sed -i -E "s/^(GO_DEFAULT_VERSION\s*[:?]=\s*).*/\1$MAJOR_MINOR/" "$VALUES_MK"
+        NEEDS_REFRESH=true
+    fi
 fi
 
 if [ "$NEEDS_REFRESH" = true ]; then
+    echo "🔄 正在刷新 feeds 索引..."
     ./scripts/feeds update -i
     ./scripts/feeds install "golang$MAJOR_MINOR"
     ./scripts/feeds install golang
