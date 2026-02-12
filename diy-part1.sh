@@ -4,17 +4,17 @@ set -u
 set -o pipefail
 
 # ====================================================================================
+echo "🔄 核心更新：正在检查并更新 cloudflared 源码版本..."
+if [ -f "$GITHUB_WORKSPACE/update_cloudflared.sh" ]; then
+    chmod +x "$GITHUB_WORKSPACE/update_cloudflared.sh"
+    "$GITHUB_WORKSPACE/update_cloudflared.sh"
+fi
+
 echo "🔄 核心更新：正在检查并更新 Golang 编译器版本..."
 # 必须在 install -a 之前运行，以便创建新的 golang1.26 目录并被识别
 if [ -f "$GITHUB_WORKSPACE/update_go.sh" ]; then
     chmod +x "$GITHUB_WORKSPACE/update_go.sh"
     "$GITHUB_WORKSPACE/update_go.sh"
-fi
-
-echo "🔄 核心更新：正在检查并更新 cloudflared 源码版本..."
-if [ -f "$GITHUB_WORKSPACE/update_cloudflared.sh" ]; then
-    chmod +x "$GITHUB_WORKSPACE/update_cloudflared.sh"
-    "$GITHUB_WORKSPACE/update_cloudflared.sh"
 fi
 # ====================================================================================
 
