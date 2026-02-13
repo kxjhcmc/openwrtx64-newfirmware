@@ -106,8 +106,13 @@ fi
 # B. 下载官方核心文件
 echo "⚙️ 同步官方核心配置文件..."
 download_official "golang-values.mk" "$BASE_DIR/golang-values.mk"
+download_official "golang-compiler.mk" "$BASE_DIR/golang-compiler.mk"
+download_official "golang-package.mk" "$BASE_DIR/golang-package.mk" 
+download_official "golang-version.mk" "$BASE_DIR/golang-version.mk" 
+download_official "golang-host-build.mk" "$BASE_DIR/golang-host-build.mk" 
 download_official "golang-bootstrap/Makefile" "$BASE_DIR/golang-bootstrap/Makefile"
 download_official "golang$FINAL_T_MM/Makefile" "$TARGET_LOCAL_DIR/Makefile"
+
 
 # C. 二次校验并执行小版本 sed 修改 (针对官方 Makefile 还没更新到最新小版本的情况)
 # 重新读取刚下载的 Makefile
