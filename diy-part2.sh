@@ -43,9 +43,14 @@ done
 
 echo "🧩 应用 Cloudflared UI 翻译和界面补丁"
 CLOUDFLARED_APP_DIR="feeds/luci/applications/luci-app-cloudflared"
-if [ -d "$CLOUDFLARED_APP_DIR" ]; then
-    download "https://raw.githubusercontent.com/kxjhcmc/openwrtx64-newfirmware/refs/heads/main/cloudflared/config.js" "$CLOUDFLARED_APP_DIR/htdocs/luci-static/resources/view/cloudflared/config.js"
-    download "https://raw.githubusercontent.com/kxjhcmc/openwrtx64-newfirmware/refs/heads/main/cloudflared/cloudflared.po" "$CLOUDFLARED_APP_DIR/po/zh_Hans/cloudflared.po"
+LOCAL_PATCH_DIR="$GITHUB_WORKSPACE/cloudflared"
+
+if [ -d "$CLOUDFLARED_APP_DIR" ] && [ -d "$LOCAL_PATCH_DIR" ]; then
+    cp -f "$LOCAL_PATCH_DIR/config.js" \
+        "$CLOUDFLARED_APP_DIR/htdocs/luci-static/resources/view/cloudflared/config.js"
+
+    cp -f "$LOCAL_PATCH_DIR/cloudflared.po" \
+        "$CLOUDFLARED_APP_DIR/po/zh_Hans/cloudflared.po"
 fi
 
 echo "🕒 添加编译日期"
