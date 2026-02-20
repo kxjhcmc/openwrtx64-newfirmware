@@ -140,9 +140,6 @@ fi
 if [ "$NEEDS_REFRESH" = true ]; then
     echo "🔄 刷新 feeds 索引..."
     ./scripts/feeds update -i 
-    ./scripts/feeds install "golang$FINAL_T_MM"
-    ./scripts/feeds install golang
-    ./scripts/feeds install golang-bootstrap
 fi
 
 echo "🚀 Golang 自动化流程处理完成！"
