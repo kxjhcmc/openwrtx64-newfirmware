@@ -193,8 +193,8 @@ jobs:
     - name: Delete old workflow runs
       shell: bash
       env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
           # 获取所有已完成的 workflow run ID，从旧到新排列
           # 保留最近的 3 个运行记录 (如果总数小于 3 则不删除任何内容)
           runs=$(gh api repos/${{ github.repository }}/actions/runs \
