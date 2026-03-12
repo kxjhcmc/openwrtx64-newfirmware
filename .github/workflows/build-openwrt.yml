@@ -202,7 +202,7 @@ jobs:
         done
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@mv0.3.4
+      uses: dev-drprasad/delete-older-releases@v0.3.4
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
         keep_latest: 10
