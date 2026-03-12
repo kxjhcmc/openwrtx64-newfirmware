@@ -195,7 +195,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        runs=$(gh api repos/${{ github.repository }}/actions/runs --paginate --jq '.workflow_runs[] | select(.status=="completed") | .id' | head -n -3)
+        runs=$(gh api repos/${{ github.repository }}/actions/runs --paginate --jq '.workflow_runs[] | select(.status=="completed") | .id' | head -n +4)
         for run_id in $runs; do
           echo "Deleting run: $run_id"
           gh api -X DELETE repos/${{ github.repository }}/actions/runs/$run_id
