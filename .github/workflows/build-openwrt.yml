@@ -190,7 +190,7 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
-     - name: Delete old workflow runs
+    - name: Delete old workflow runs
       shell: bash
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
