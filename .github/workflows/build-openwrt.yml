@@ -190,11 +190,23 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
-    - name: Delete workflow runs
-      uses: kxjhcmc/delete-workflow-runs@v2.1.0
-      with:
-        retain_days: 1
-        keep_minimum_runs: 3
+    - name: Delete old workflow runs
+      shell: bash
+      env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 获取所有已完成的 workflow run ID，从旧到新排列
+          # 保留最近的 3 个运行记录 (如果总数小于 3 则不删除任何内容)
+          runs=$(gh api repos/${{ github.repository }}/actions/runs \
+            --paginate \
+            --jq '.workflow_runs[] | select(.status=="completed") | .id' \
+            | head -n -3)
+          
+          # 循环删除
+          for run_id in $runs; do
+            echo "Deleting run: $run_id"
+            gh api -X DELETE repos/${{ github.repository }}/actions/runs/$run_id
+          done
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@mv0.3.4
