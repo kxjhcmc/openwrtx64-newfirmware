@@ -49,8 +49,13 @@ jobs:
         token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
         event-type: Source Code Update
 
-    - name: Delete workflow runs
-      uses: kxjhcmc/delete-workflow-runs@v2.1.0
-      with:
-        retain_days: 1
-        keep_minimum_runs: 1
+    - name: Delete old workflow runs
+      shell: bash
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        runs=$(gh api repos/${{ github.repository }}/actions/runs --paginate --jq '.workflow_runs[] | select(.status=="completed") | .id' | head -n +4)
+        for run_id in $runs; do
+          echo "Deleting run: $run_id"
+          gh api -X DELETE repos/${{ github.repository }}/actions/runs/$run_id
+        done
