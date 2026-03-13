@@ -201,11 +201,14 @@ jobs:
           gh api -X DELETE repos/${{ github.repository }}/actions/runs/$run_id
         done
 
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@v0.3.4
+    - name: Delete old Releases
+      uses: ophub/delete-releases-workflows@main
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 10
+        delete_releases: true
+        releases_keep_latest: 10
         delete_tags: true
+        delete_workflows: false 
+        gh_token: ${{ secrets.GITHUB_TOKEN }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
