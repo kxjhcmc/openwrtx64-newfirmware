@@ -23,4 +23,11 @@ rm -rf feeds/luci/applications/luci-app-cpufreq
 rm -rf feeds/luci/applications/luci-app-passwall
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,simple-obfs,tcping,trojan,trojan-go,trojan-plus,tuic-client,v2ray-plugin,xray-plugin}
 
+echo "🧩 复制 FastNet 及 LuCI 插件到 packages 目录"
+if [ -f "$GITHUB_WORKSPACE/copy-fastnet.sh" ]; then
+ chmod +x "$GITHUB_WORKSPACE/copy-fastnet.sh"
+ "$GITHUB_WORKSPACE/copy-fastnet.sh"
+fi
+# =================================
+
 echo "✅ Pre-Feeds 阶段执行完毕。"
