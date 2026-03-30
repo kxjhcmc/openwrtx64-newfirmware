@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "🧩 复制 FastNet 及 LuCI 插件到 packages 目录"
 
 LOCAL_FASTNET_DIR="$GITHUB_WORKSPACE/fastnet"
