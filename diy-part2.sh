@@ -53,6 +53,12 @@ if [ -d "$CLOUDFLARED_APP_DIR" ] && [ -d "$LOCAL_PATCH_DIR" ]; then
         "$CLOUDFLARED_APP_DIR/po/zh_Hans/cloudflared.po"
 fi
 
+echo "🧩 复制 FastNet 及 LuCI 插件到 packages 目录"
+if [ -f "$GITHUB_WORKSPACE/copy-fastnet.sh" ]; then
+ chmod +x "$GITHUB_WORKSPACE/copy-fastnet.sh"
+ "$GITHUB_WORKSPACE/copy-fastnet.sh"
+fi
+
 echo "🕒 添加编译日期"
 VER_FILE="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
 if [ -f "$VER_FILE" ]; then
