@@ -24,7 +24,7 @@ function action_status()
 		return host
 	end
 
-	local running = (sys.call("pidof FastNet >/dev/null") == 0)
+	local running = (sys.call("pidof fastnet >/dev/null") == 0)
 	local host = get_host()
 	local port = uci:get_first("fastnet", "fastnet", "port") or "3200"
 	local token = uci:get_first("fastnet", "fastnet", "token") or ""
