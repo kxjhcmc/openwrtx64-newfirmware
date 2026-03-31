@@ -15,7 +15,7 @@ local function get_host()
 end
 
 local st = m:section(SimpleSection, translate("Status"))
-local running = (sys.call("pidof FastNet >/dev/null") == 0)
+local running = (sys.call("pidof fastnet >/dev/null") == 0)
 local listen_port = uci:get_first("fastnet", "fastnet", "port") or "3200"
 local token = uci:get_first("fastnet", "fastnet", "token") or ""
 local url = "http://" .. get_host() .. ":" .. listen_port .. "/"
