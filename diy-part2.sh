@@ -62,6 +62,7 @@ fi
 echo "🧩 修改网络参数"
 sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_udp_timeout=10/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=60/' package/kernel/linux/files/sysctl-nf-conntrack.conf
+sed -i 's/net.netfilter.nf_conntrack_tcp_timeout_established=7440/net.netfilter.nf_conntrack_tcp_timeout_established=3600/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 if [ -f "package/kernel/linux/files/sysctl-tcp-bbr.conf" ]; then
     if ! grep -q "net.core.default_qdisc" package/kernel/linux/files/sysctl-tcp-bbr.conf; then
         echo "net.core.default_qdisc=fq" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
