@@ -59,6 +59,11 @@ if [ -f "$GITHUB_WORKSPACE/copy-fastnet.sh" ]; then
  "$GITHUB_WORKSPACE/copy-fastnet.sh"
 fi
 
+echo "🧩 修改udp包存活时间"
+sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_udp_timeout=10/' package/kernel/linux/files/sysctl-nf-conntrack.conf
+sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=60/' package/kernel/linux/files/sysctl-nf-conntrack.conf
+echo "✅修改完成"
+
 echo "🕒 添加编译日期"
 VER_FILE="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
 if [ -f "$VER_FILE" ]; then
