@@ -59,10 +59,19 @@ if [ -f "$GITHUB_WORKSPACE/copy-fastnet.sh" ]; then
  "$GITHUB_WORKSPACE/copy-fastnet.sh"
 fi
 
-echo "🧩 修改udp包存活时间"
+echo "🧩 修改网络参数"
 sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_udp_timeout=10/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=60/' package/kernel/linux/files/sysctl-nf-conntrack.conf
-echo "✅修改完成"
+if [ -f "package/kernel/linux/files/sysctl-tcp-bbr.conf" ]; then
+    if ! grep -q "net.core.default_qdisc" package/kernel/linux/files/sysctl-tcp-bbr.conf; then
+        echo "net.core.default_qdisc=fq" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
+        echo "已成功添加 net.core.default_qdisc=fq 到配置文件。"
+    else
+        echo "配置已存在，无需重复添加。"
+    fi
+else
+    echo "错误：找不到指定文件 package/kernel/linux/files/sysctl-tcp-bbr.conf"
+fi
 
 echo "🕒 添加编译日期"
 VER_FILE="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
