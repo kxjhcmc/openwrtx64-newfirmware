@@ -64,8 +64,8 @@ sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_u
 sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=60/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i 's/net.netfilter.nf_conntrack_tcp_timeout_established=7440/net.netfilter.nf_conntrack_tcp_timeout_established=3600/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 if ! grep -q "net.core.default_qdisc" package/kernel/linux/files/sysctl-tcp-bbr.conf; then
-    echo "net.core.default_qdisc=fq" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
-    echo "已成功添加 net.core.default_qdisc=fq 到配置文件。"
+    echo "net.core.default_qdisc=cake" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
+    echo "已成功添加 net.core.default_qdisc=cake 到配置文件。"
 else
     echo "配置已存在，无需重复添加。"
 fi
