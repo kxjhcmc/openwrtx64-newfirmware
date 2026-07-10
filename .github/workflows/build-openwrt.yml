@@ -60,7 +60,7 @@ jobs:
         os_swap: "False"
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Initialization environment
       env:
