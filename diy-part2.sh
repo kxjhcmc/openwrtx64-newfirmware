@@ -60,8 +60,8 @@ if [ -f "$GITHUB_WORKSPACE/copy-fastnet.sh" ]; then
 fi
 
 echo "🧩 修改网络参数"
-sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_udp_timeout=10/' package/kernel/linux/files/sysctl-nf-conntrack.conf
-sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=60/' package/kernel/linux/files/sysctl-nf-conntrack.conf
+sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_udp_timeout=30/' package/kernel/linux/files/sysctl-nf-conntrack.conf
+sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=120/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i 's/net.netfilter.nf_conntrack_tcp_timeout_established=7440/net.netfilter.nf_conntrack_tcp_timeout_established=3600/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 echo "net.core.default_qdisc=cake" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
 echo "net.ipv4.tcp_fastopen=3" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
