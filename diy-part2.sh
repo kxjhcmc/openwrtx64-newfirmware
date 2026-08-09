@@ -73,6 +73,7 @@ net.netfilter.nf_conntrack_tcp_timeout_last_ack=10
 net.netfilter.nf_conntrack_tcp_timeout_time_wait=10
 net.netfilter.nf_conntrack_tcp_timeout_close=5
 net.netfilter.nf_conntrack_icmp_timeout=10
+net.ipv4.tcp_fastopen=3
 EOF
 
 echo "已成功修改配置文件。"
