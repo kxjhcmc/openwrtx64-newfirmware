@@ -63,6 +63,17 @@ echo "🧩 修改网络参数"
 sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_udp_timeout=10/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=60/' package/kernel/linux/files/sysctl-nf-conntrack.conf
 sed -i 's/net.netfilter.nf_conntrack_tcp_timeout_established=7440/net.netfilter.nf_conntrack_tcp_timeout_established=1800/' package/kernel/linux/files/sysctl-nf-conntrack.conf
+cat >> package/kernel/linux/files/sysctl-nf-conntrack.conf <<'EOF'
+
+net.netfilter.nf_conntrack_tcp_timeout_syn_sent=5
+net.netfilter.nf_conntrack_tcp_timeout_syn_recv=5
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait=10
+net.netfilter.nf_conntrack_tcp_timeout_close_wait=10
+net.netfilter.nf_conntrack_tcp_timeout_last_ack=10
+net.netfilter.nf_conntrack_tcp_timeout_time_wait=10
+net.netfilter.nf_conntrack_icmp_timeout=10
+EOF
+
 echo "net.core.default_qdisc=cake" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
 echo "net.ipv4.tcp_fastopen=3" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
 echo "已成功修改配置文件。"
