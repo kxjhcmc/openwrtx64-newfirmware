@@ -71,6 +71,7 @@ net.netfilter.nf_conntrack_tcp_timeout_fin_wait=10
 net.netfilter.nf_conntrack_tcp_timeout_close_wait=10
 net.netfilter.nf_conntrack_tcp_timeout_last_ack=10
 net.netfilter.nf_conntrack_tcp_timeout_time_wait=10
+net.netfilter.nf_conntrack_tcp_timeout_close=5
 net.netfilter.nf_conntrack_icmp_timeout=10
 EOF
 
