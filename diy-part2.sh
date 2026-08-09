@@ -70,7 +70,6 @@ sed -i '/^net.netfilter.nf_conntrack_udp_timeout_stream=/d' $CONF_FILE
 
 # 2. 直接把这三行 + 后面那一堆，作为一个整体追加进去
 cat >> $CONF_FILE <<'EOF'
-
 net.netfilter.nf_conntrack_tcp_timeout_established=1800
 net.netfilter.nf_conntrack_udp_timeout=10
 net.netfilter.nf_conntrack_udp_timeout_stream=60
