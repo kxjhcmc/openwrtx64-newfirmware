@@ -75,7 +75,6 @@ net.netfilter.nf_conntrack_tcp_timeout_close=5
 net.netfilter.nf_conntrack_icmp_timeout=10
 EOF
 
-echo "net.core.default_qdisc=cake" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
 echo "net.ipv4.tcp_fastopen=3" >> package/kernel/linux/files/sysctl-tcp-bbr.conf
 echo "已成功修改配置文件。"
 
