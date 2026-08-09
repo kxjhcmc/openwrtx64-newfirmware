@@ -60,11 +60,20 @@ if [ -f "$GITHUB_WORKSPACE/copy-fastnet.sh" ]; then
 fi
 
 echo "🧩 修改网络参数"
-sed -i 's/net.netfilter.nf_conntrack_udp_timeout=60/net.netfilter.nf_conntrack_udp_timeout=10/' package/kernel/linux/files/sysctl-nf-conntrack.conf
-sed -i 's/net.netfilter.nf_conntrack_udp_timeout_stream=180/net.netfilter.nf_conntrack_udp_timeout_stream=60/' package/kernel/linux/files/sysctl-nf-conntrack.conf
-sed -i 's/net.netfilter.nf_conntrack_tcp_timeout_established=7440/net.netfilter.nf_conntrack_tcp_timeout_established=1800/' package/kernel/linux/files/sysctl-nf-conntrack.conf
-cat >> package/kernel/linux/files/sysctl-nf-conntrack.conf <<'EOF'
+CONF_FILE="package/kernel/linux/files/sysctl-nf-conntrack.conf"
 
+# 1. 精确删除那三行（利用键名匹配，不理会旧值）
+# 注意：udp_timeout 匹配时要加 =，否则会把 udp_timeout_stream 也删了
+sed -i '/^net.netfilter.nf_conntrack_tcp_timeout_established=/d' $CONF_FILE
+sed -i '/^net.netfilter.nf_conntrack_udp_timeout=/d' $CONF_FILE
+sed -i '/^net.netfilter.nf_conntrack_udp_timeout_stream=/d' $CONF_FILE
+
+# 2. 直接把这三行 + 后面那一堆，作为一个整体追加进去
+cat >> $CONF_FILE <<'EOF'
+
+net.netfilter.nf_conntrack_tcp_timeout_established=1800
+net.netfilter.nf_conntrack_udp_timeout=10
+net.netfilter.nf_conntrack_udp_timeout_stream=60
 net.netfilter.nf_conntrack_tcp_timeout_syn_sent=5
 net.netfilter.nf_conntrack_tcp_timeout_syn_recv=5
 net.netfilter.nf_conntrack_tcp_timeout_fin_wait=10
