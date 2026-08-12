@@ -70,17 +70,28 @@ sed -i '/^net.netfilter.nf_conntrack_udp_timeout_stream=/d' $CONF_FILE
 
 # 2. 直接把这三行 + 后面那一堆，作为一个整体追加进去
 cat >> $CONF_FILE <<'EOF'
-net.netfilter.nf_conntrack_tcp_timeout_established=1800
-net.netfilter.nf_conntrack_udp_timeout=10
-net.netfilter.nf_conntrack_udp_timeout_stream=60
+net.ipv4.tcp_ecn=0
+net.ipv4.tcp_keepalive_probes=6
+net.ipv4.tcp_keepalive_intvl=10
+net.ipv4.ip_local_port_range=2048 63487
+net.core.netdev_budget=600
+net.core.gro_normal_batch=16
+net.core.netdev_max_backlog=4096
 net.netfilter.nf_conntrack_tcp_timeout_syn_sent=5
 net.netfilter.nf_conntrack_tcp_timeout_syn_recv=5
-net.netfilter.nf_conntrack_tcp_timeout_fin_wait=10
-net.netfilter.nf_conntrack_tcp_timeout_close_wait=10
-net.netfilter.nf_conntrack_tcp_timeout_last_ack=10
-net.netfilter.nf_conntrack_tcp_timeout_time_wait=10
-net.netfilter.nf_conntrack_tcp_timeout_close=5
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 10
+net.netfilter.nf_conntrack_tcp_timeout_close_wait = 10
+net.netfilter.nf_conntrack_tcp_timeout_last_ack = 10
+net.netfilter.nf_conntrack_tcp_timeout_time_wait = 10
+net.netfilter.nf_conntrack_tcp_timeout_close = 5
+net.netfilter.nf_conntrack_tcp_timeout_established=1800
 net.netfilter.nf_conntrack_icmp_timeout=10
+net.netfilter.nf_conntrack_udp_timeout = 10
+net.netfilter.nf_conntrack_udp_timeout_stream = 60
+net.ipv4.neigh.default.gc_thresh1=16384
+net.ipv4.neigh.default.gc_thresh2=16384
+net.ipv4.neigh.default.gc_thresh3=32768
+net.unix.max_dgram_qlen=2048
 net.ipv4.tcp_fastopen=3
 EOF
 
