@@ -62,8 +62,8 @@ fi
 echo "🧩 修改网络参数"
 CONF_FILE="package/kernel/linux/files/sysctl-nf-conntrack.conf"
 
-# 1. 覆盖写入
-cat > $CONF_FILE <<'EOF'
+# 直接使用 > 进行覆盖写入，不需要先 echo ""
+cat > "$CONF_FILE" <<'EOF'
 net.ipv4.tcp_ecn=0
 net.ipv4.tcp_keepalive_probes=6
 net.ipv4.tcp_keepalive_intvl=10
@@ -76,22 +76,22 @@ net.core.rmem_max=4194304
 
 net.netfilter.nf_conntrack_acct=1
 net.netfilter.nf_conntrack_checksum=0
-net.netfilter.nf_conntrack_generic_timeout = 600
-net.netfilter.nf_conntrack_log_invalid = 0
+net.netfilter.nf_conntrack_generic_timeout=600
+net.netfilter.nf_conntrack_log_invalid=0
 net.netfilter.nf_conntrack_tcp_timeout_syn_sent=5
 net.netfilter.nf_conntrack_tcp_timeout_syn_recv=5
-net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 10
-net.netfilter.nf_conntrack_tcp_timeout_close_wait = 10
-net.netfilter.nf_conntrack_tcp_timeout_last_ack = 10
-net.netfilter.nf_conntrack_tcp_timeout_time_wait = 10
-net.netfilter.nf_conntrack_tcp_timeout_close = 5
-net.netfilter.nf_conntrack_tcp_loose = 1
-net.netfilter.nf_conntrack_tcp_be_liberal = 0
-net.netfilter.nf_conntrack_tcp_max_retrans = 3
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait=10
+net.netfilter.nf_conntrack_tcp_timeout_close_wait=10
+net.netfilter.nf_conntrack_tcp_timeout_last_ack=10
+net.netfilter.nf_conntrack_tcp_timeout_time_wait=10
+net.netfilter.nf_conntrack_tcp_timeout_close=5
+net.netfilter.nf_conntrack_tcp_loose=1
+net.netfilter.nf_conntrack_tcp_be_liberal=0
+net.netfilter.nf_conntrack_tcp_max_retrans=3
 net.netfilter.nf_conntrack_tcp_timeout_established=1800
 net.netfilter.nf_conntrack_icmp_timeout=10
-net.netfilter.nf_conntrack_udp_timeout = 10
-net.netfilter.nf_conntrack_udp_timeout_stream = 60
+net.netfilter.nf_conntrack_udp_timeout=10
+net.netfilter.nf_conntrack_udp_timeout_stream=60
 
 net.ipv4.neigh.default.gc_thresh1=16384
 net.ipv4.neigh.default.gc_thresh2=16384
