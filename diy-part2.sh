@@ -62,11 +62,8 @@ fi
 echo "🧩 修改网络参数"
 CONF_FILE="package/kernel/linux/files/sysctl-nf-conntrack.conf"
 
-# 1. 清空文件内容
-echo "" > "$CONF_FILE"
-
-# 2. 直接把这三行 + 后面那一堆，作为一个整体追加进去
-cat >> $CONF_FILE <<'EOF'
+# 1. 覆盖写入
+cat > $CONF_FILE <<'EOF'
 net.ipv4.tcp_ecn=0
 net.ipv4.tcp_keepalive_probes=6
 net.ipv4.tcp_keepalive_intvl=10
