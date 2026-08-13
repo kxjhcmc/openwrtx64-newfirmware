@@ -62,11 +62,8 @@ fi
 echo "🧩 修改网络参数"
 CONF_FILE="package/kernel/linux/files/sysctl-nf-conntrack.conf"
 
-# 1. 精确删除那三行（利用键名匹配，不理会旧值）
-# 注意：udp_timeout 匹配时要加 =，否则会把 udp_timeout_stream 也删了
-sed -i '/^net.netfilter.nf_conntrack_tcp_timeout_established=/d' $CONF_FILE
-sed -i '/^net.netfilter.nf_conntrack_udp_timeout=/d' $CONF_FILE
-sed -i '/^net.netfilter.nf_conntrack_udp_timeout_stream=/d' $CONF_FILE
+# 1. 清空文件内容
+echo "" > "$CONF_FILE"
 
 # 2. 直接把这三行 + 后面那一堆，作为一个整体追加进去
 cat >> $CONF_FILE <<'EOF'
