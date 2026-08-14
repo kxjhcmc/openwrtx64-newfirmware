@@ -62,8 +62,11 @@ fi
 echo "🧩 修改网络参数"
 CONF_FILE="package/kernel/linux/files/sysctl-nf-conntrack.conf"
 
-# 直接使用 > 进行覆盖写入，不需要先 echo ""
+# 直接使用 > 进行覆盖写入
 cat > "$CONF_FILE" <<'EOF'
+# Do not edit, changes to this file will be lost on upgrades
+# /etc/sysctl.conf can be used to customize sysctl settings
+
 net.ipv4.tcp_ecn=0
 net.ipv4.tcp_keepalive_probes=6
 net.ipv4.tcp_keepalive_intvl=10
