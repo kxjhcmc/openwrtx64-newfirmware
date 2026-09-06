@@ -53,10 +53,13 @@ if [ -d "$CLOUDFLARED_APP_DIR" ] && [ -d "$LOCAL_PATCH_DIR" ]; then
         "$CLOUDFLARED_APP_DIR/po/zh_Hans/cloudflared.po"
 fi
 
-echo "🧩 复制 FastNet 及 LuCI 插件到 packages 目录"
-if [ -f "$GITHUB_WORKSPACE/copy-fastnet.sh" ]; then
- chmod +x "$GITHUB_WORKSPACE/copy-fastnet.sh"
- "$GITHUB_WORKSPACE/copy-fastnet.sh"
+echo "🧩 下载 speedtest 插件到 package 目录"
+if [ ! -d package/speedtest ]; then
+    TMP_SPEEDTEST="$(mktemp -d)"
+    git clone --depth 1 https://github.com/kxjhcmc/openwrt-speedtest "$TMP_SPEEDTEST"
+    cp -r "$TMP_SPEEDTEST/speedtest" package/
+    cp -r "$TMP_SPEEDTEST/luci-app-speedtest" package/
+    rm -rf "$TMP_SPEEDTEST"
 fi
 
 echo "🧩 修改网络参数"
