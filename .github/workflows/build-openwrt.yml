@@ -38,6 +38,12 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+    - name: 设置系统时区为北京时间
+      run: sudo timedatectl set-timezone Asia/Shanghai
+      
+    - name: 打印当前时间检查
+      run: date
+
     - name: "Optimize Disk Space"
       uses: "kxjhcmc/disk-space-optimizer-ghaction@v0.8.1"
       with:
