@@ -15,8 +15,8 @@ echo "🔧 修改默认登录地址为 192.168.0.1"
 sed -i 's/192.168.1.1/192.168.0.1/g' package/base-files/files/bin/config_generate
 
 echo "📦 重新下载最新版 Passwall (克隆到 package 目录以获得最高优先级)"
-git clone https://github.com/Openwrt-Passwall/openwrt-passwall package/openwrt-passwall
-git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
+git clone --depth 1 https://github.com/Openwrt-Passwall/openwrt-passwall package/openwrt-passwall
+git clone --depth 1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
 
 echo "🧱 替换核心组件：Firewall4, nftables, libnftnl (支持 fullcone NAT)"
 REPO_BASE_URL="https://raw.githubusercontent.com/immortalwrt/immortalwrt/master"
