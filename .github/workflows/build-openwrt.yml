@@ -41,9 +41,19 @@ jobs:
     - name: 设置系统时区为北京时间
       run: sudo timedatectl set-timezone Asia/Shanghai
       
-    - name: 打印当前时间检查
+    - name: 打印当前时间配置检查
       run: date
-      
+       echo "CPU:"
+       lscpu
+       echo "nproc:"
+       nproc
+       echo "Memory:"
+       free -h
+       echo "Disk:"
+       df -hT
+       echo "CPU model:"
+       grep "model name" /proc/cpuinfo | head -1
+
     - name: Checkout
       uses: actions/checkout@v7
 
@@ -103,14 +113,7 @@ jobs:
       id: compile
       run: |
         cd openwrt
-        echo "===== RUNNER INFO ====="
-        echo "CPU threads: $(nproc)"
-        echo "CPU model: $(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2-)"
-        echo "Memory:"
-        free -h
-        echo "Disk:"
-        df -hT
-        echo "======================="
+        echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
