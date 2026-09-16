@@ -43,28 +43,7 @@ jobs:
       
     - name: 打印当前时间检查
       run: date
-
-    - name: "Optimize Disk Space"
-      uses: "kxjhcmc/disk-space-optimizer-ghaction@v0.8.1"
-      with:
-        operate_sudo: "True"
-        general_include: ".+"
-        general_exclude: |-
-          ^GCC$
-          ^G\+\+$
-          Clang
-          LLVM
-        docker_include: ".+"
-        docker_prune: "True"
-        docker_clean: "True"
-        apt_prune: "True"
-        apt_clean: "True"
-        homebrew_prune: "True"
-        homebrew_clean: "True"
-        npm_prune: "True"
-        npm_clean: "True"
-        os_swap: "False"
-
+      
     - name: Checkout
       uses: actions/checkout@v7
 
