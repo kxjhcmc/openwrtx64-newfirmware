@@ -91,6 +91,11 @@ jobs:
         chmod +x $DIY_P1_SH
         cd openwrt && ./scripts/feeds update -a
 
+    - name: Cache
+      uses: stupidloud/cachewrtbuild@main
+      with:
+        prefix: ${{ github.workspace }}/openwrt
+
     - name: Load custom feeds
       run: |
         chmod +x $DIY_P1_SH
