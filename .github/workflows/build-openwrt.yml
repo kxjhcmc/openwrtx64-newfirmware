@@ -78,6 +78,7 @@ jobs:
     - name: Cache
       uses: stupidloud/cachewrtbuild@main
       with:
+        clean: true
         prefix: ${{ github.workspace }}/openwrt    
         
     - name: Update feeds
