@@ -7,7 +7,7 @@ BASE_DIR="feeds/packages/lang/golang"
 RAW_URL="https://raw.githubusercontent.com/openwrt/packages/master/lang/golang"
 GO_API_URL="https://go.dev/dl/?mode=json"
 
-echo "🛠️ 开始执行 Golang 自动更新脚本 (高性能逻辑版)..."
+echo "🛠️  开始执行 Golang 自动更新脚本 (坚韧版)..."
 
 # --- 辅助函数：稳健下载官方文件 ---
 download_official() {
@@ -15,13 +15,38 @@ download_official() {
     local output="$2"
     mkdir -p "$(dirname "$output")"
     echo "📥 正在同步: $path ..."
-    curl -fsSL -m 15 "$RAW_URL/$path" -o "$output"
+    curl -fsSL -m 15 --retry 3 "$RAW_URL/$path" -o "$output"
     chmod +w "$output" || true
 }
 
-# --- 1. 获取官网最新稳定版 ---
-GO_DATA=$(curl -s "$GO_API_URL" | jq -r '[.[] | select(.stable==true)][0]')
-T_VER_OFFICIAL=$(echo "$GO_DATA" | jq -r '.version' | sed 's/go//')
+# --- 校验函数 ---
+is_valid_go_version() {
+    echo "$1" | grep -qE '^[0-9]+(\.[0-9]+)+$'
+}
+is_valid_sha256() {
+    echo "$1" | grep -qE '^[0-9a-f]{64}$'
+}
+
+# --- 1. 获取官网最新稳定版（带认证失败即熔断，绝不写入垃圾数据）---
+GO_DATA=""
+for i in 1 2 3; do
+    if GO_DATA=$(curl -fsSL -m 30 --retry 2 "$GO_API_URL" 2>/dev/null) && [ -n "$GO_DATA" ]; then
+        break
+    fi
+    echo "⚠️  第 $i 次获取 go.dev 版本数据失败..."
+    GO_DATA=""
+    sleep 3
+done
+if [ -z "$GO_DATA" ]; then
+    echo "❌ 无法获取 go.dev 版本数据，放弃更新（保持本地版本不变）。"
+    exit 1
+fi
+
+T_VER_OFFICIAL=$(echo "$GO_DATA" | jq -r '[.[] | select(.stable==true)][0].version // empty' | sed 's/go//')
+if ! is_valid_go_version "$T_VER_OFFICIAL"; then
+    echo "❌ 解析出的 Go 版本号无效 ('$T_VER_OFFICIAL')，放弃更新。"
+    exit 1
+fi
 T_MM_OFFICIAL=$(echo "$T_VER_OFFICIAL" | cut -d. -f1,2)
 
 # --- 2. 获取本地当前版本信息 ---
@@ -33,11 +58,11 @@ PERFORM_MAJOR_UPDATE=false
 
 # --- 3. 判定最终目标主版本 ---
 if [ -z "$CURRENT_LOCAL_MM" ]; then
-    echo "⚠️ 本地未找到目录，假定初次安装。"
+    echo "⚠️  本地未找到目录，假定初次安装。"
     FINAL_T_MM="$T_MM_OFFICIAL"
     PERFORM_MAJOR_UPDATE=true
 elif [ "$CURRENT_LOCAL_MM" != "$T_MM_OFFICIAL" ]; then
-    echo "⚠️ 官网检测到大版本: $T_MM_OFFICIAL (本地: $CURRENT_LOCAL_MM)"
+    echo "⚠️  官网检测到大版本: $T_MM_OFFICIAL (本地: $CURRENT_LOCAL_MM)"
     # 探测官方 GitHub
     if curl -fsSL -m 10 --output /dev/null "$RAW_URL/golang$T_MM_OFFICIAL/Makefile"; then
         echo "✅ 官方已更新 $T_MM_OFFICIAL，准备执行大版本切换。"
@@ -52,14 +77,20 @@ else
 fi
 
 # --- 4. 获取该主版本线下的最新详细数据 ---
-GO_DATA_FINAL=$(curl -s "$GO_API_URL" | jq -r --arg mm "go$FINAL_T_MM" '[.[] | select(.version | startswith($mm))][0]')
-FINAL_T_VER=$(echo "$GO_DATA_FINAL" | jq -r '.version' | sed 's/go//')
+GO_DATA_FINAL=$(echo "$GO_DATA" | jq -r --arg mm "go$FINAL_T_MM" '[.[] | select(.version | startswith($mm))][0] // empty')
+FINAL_T_VER=$(echo "$GO_DATA_FINAL" | jq -r '.version // empty' | sed 's/go//')
 FINAL_T_P=$(echo "$FINAL_T_VER" | cut -d. -f3); FINAL_T_P=${FINAL_T_P:-0}
-FINAL_T_HASH=$(echo "$GO_DATA_FINAL" | jq -r '.files[] | select(.kind=="source") | .sha256')
+FINAL_T_HASH=$(echo "$GO_DATA_FINAL" | jq -r '.files[] | select(.kind=="source") | .sha256 // empty')
+
+# 熔断：版本/补丁号/哈希任一异常，立即放弃，绝不污染 Makefile
+if ! is_valid_go_version "$FINAL_T_VER" || ! echo "$FINAL_T_P" | grep -qE '^[0-9]+$' || ! is_valid_sha256 "$FINAL_T_HASH"; then
+    echo "❌ go.dev 数据异常 (版本:'$FINAL_T_VER' 补丁:'$FINAL_T_P' 哈希:'${FINAL_T_HASH:0:12}...')，放弃更新。"
+    exit 1
+fi
 
 echo "📈 目标版本线: $FINAL_T_MM | 官网最新小版: $FINAL_T_VER"
 
-# --- 5. 预读本地版本并执行“早退”判断 ---
+# --- 5. 预读本地版本并执行"早退"判断 ---
 # 注意：如果是大版本更新，本地目录还没改名，我们需要读 CURRENT_LOCAL_MM_PATH 里的文件
 # 如果是小版本更新，读当前 FINAL_T_MM 对应的文件
 CHECK_MAKEFILE=""
@@ -104,12 +135,12 @@ if [ "$PERFORM_MAJOR_UPDATE" = true ]; then
 fi
 
 # B. 下载官方核心文件
-echo "⚙️ 同步官方核心配置文件..."
+echo "⚙️  同步官方核心配置文件..."
 download_official "golang-values.mk" "$BASE_DIR/golang-values.mk"
 download_official "golang-compiler.mk" "$BASE_DIR/golang-compiler.mk"
-download_official "golang-package.mk" "$BASE_DIR/golang-package.mk" 
-download_official "golang-version.mk" "$BASE_DIR/golang-version.mk" 
-download_official "golang-host-build.mk" "$BASE_DIR/golang-host-build.mk" 
+download_official "golang-package.mk" "$BASE_DIR/golang-package.mk"
+download_official "golang-version.mk" "$BASE_DIR/golang-version.mk"
+download_official "golang-host-build.mk" "$BASE_DIR/golang-host-build.mk"
 download_official "golang-bootstrap/Makefile" "$BASE_DIR/golang-bootstrap/Makefile"
 download_official "golang$FINAL_T_MM/Makefile" "$TARGET_LOCAL_DIR/Makefile"
 
@@ -119,7 +150,7 @@ download_official "golang$FINAL_T_MM/Makefile" "$TARGET_LOCAL_DIR/Makefile"
 LOCAL_P_NEW=$(grep -E "^GO_VERSION_PATCH\s*[:?]=" "$TARGET_LOCAL_DIR/Makefile" | head -n1 | cut -d= -f2 | tr -d '[:space:]' || echo "-1")
 
 if [ "$FINAL_T_P" != "$LOCAL_P_NEW" ]; then
-    echo "🔄 官方 Makefile 尚在 $FINAL_T_MM.$LOCAL_P_NEW，手动追更至 $FINAL_T_VER ..."
+    echo "🔄 官方 Makefile 尚在 $FINAL_T_MM.$LOCAL_P_NEW，手动追增至 $FINAL_T_VER ..."
     sed -i -E "s/^(GO_VERSION_PATCH\s*[:?]=\s*).*/\1$FINAL_T_P/" "$TARGET_LOCAL_DIR/Makefile"
     sed -i -E "s/^(PKG_HASH\s*[:?]=\s*).*/\1$FINAL_T_HASH/" "$TARGET_LOCAL_DIR/Makefile"
     sed -i -E "s/^(PKG_RELEASE\s*[:?]=\s*).*/\11/" "$TARGET_LOCAL_DIR/Makefile"
@@ -139,7 +170,7 @@ fi
 # --- 7. 刷新编译系统 ---
 if [ "$NEEDS_REFRESH" = true ]; then
     echo "🔄 刷新 feeds 索引..."
-    ./scripts/feeds update -i 
+    ./scripts/feeds update -i
 fi
 
 echo "🚀 Golang 自动化流程处理完成！"
