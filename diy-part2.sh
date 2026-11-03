@@ -62,6 +62,31 @@ if [ ! -d package/speedtest ]; then
     rm -rf "$TMP_SPEEDTEST"
 fi
 
+echo "🩹 修复 luci-app-upnp 不显示端口映射 (兼容 miniupnpd 2.3.10+)"
+# miniupnpd 2.3.10 起 nft DNAT 规则多了 "counter packets X bytes Y"，
+# luci-app-upnp 的 rpcd 正则未适配导致 LuCI 页面一直显示"当前没有生效的端口映射"。
+# 特征匹配打补丁：上游若自行修复（特征消失）则自动跳过，不做任何修改。
+UPNP_UCODE=$(find feeds -type f -path '*luci-app-upnp*' -name 'luci.upnp' 2>/dev/null || true)
+if [ -n "$UPNP_UCODE" ]; then
+    for f in $UPNP_UCODE; do
+        if grep -qF 'th dport ([0-9]+).*dnat ip to' "$f"; then
+            echo "   -> $f 已兼容，跳过"
+        elif grep -qF 'th dport ([0-9]+) dnat ip to' "$f"; then
+            sed -i 's/) dnat ip to/).*dnat ip to/' "$f"
+            if grep -qF 'th dport ([0-9]+).*dnat ip to' "$f"; then
+                echo "   -> 已打补丁: $f"
+            else
+                echo "   -> 补丁后校验失败！" >&2
+                exit 1
+            fi
+        else
+            echo "   -> $f 正则已被上游修改，视为已修复，不做任何改动"
+        fi
+    done
+else
+    echo "   -> 在 feeds 中未找到 luci-app-upnp，跳过（不影响编译）"
+fi
+
 echo "🧩 修改网络参数"
 CONF_FILE="package/kernel/linux/files/sysctl-nf-conntrack.conf"
 
