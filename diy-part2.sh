@@ -27,6 +27,7 @@ download "$REPO_BASE_URL/package/network/config/firewall4/patches/001-firewall4-
 
 download "$REPO_BASE_URL/package/network/utils/fullconenat-nft/Makefile" "package/network/utils/fullconenat-nft/Makefile"
 download "$REPO_BASE_URL/package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch" "package/network/utils/fullconenat-nft/patches/010-fix-build-with-kernel-6.12.patch"
+download "$REPO_BASE_URL/package/network/utils/fullconenat-nft/patches/011-honour-port-range-and-flags.patch" "package/network/utils/fullconenat-nft/patches/011-honour-port-range-and-flags.patch"
 
 download "$REPO_BASE_URL/package/network/utils/nftables/Makefile" "package/network/utils/nftables/Makefile"
 download "$REPO_BASE_URL/package/network/utils/nftables/patches/002-nftables-add-fullcone-expression-support.patch" "package/network/utils/nftables/patches/002-nftables-add-fullcone-expression-support.patch"
